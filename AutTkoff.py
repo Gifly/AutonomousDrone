@@ -13,7 +13,7 @@ time.sleep(0.5)
 
 print "takeoff"
 drone.takeoff()
-time.sleep(5)
+time.sleep(2)
 
 print "hovering"
 drone.hover()

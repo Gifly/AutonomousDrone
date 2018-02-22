@@ -13,7 +13,6 @@ def usarVideo():
 	print "Mostrar video"
 	IMC = 	 drone.VideoImageCount	
 	while drone.VideoImageCount==IMC: time.sleep(0.01)	# Wait until the next video-frame
-	IMC = drone.VideoImageCount
 	#key = drone.getKey()
 	#if key:		stop = True
 	img  = drone.VideoImage					# Copy video-image
