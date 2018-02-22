@@ -1,6 +1,8 @@
 import api.ps_drone as ps_drone
 import time
 import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+
 TRIG = 3
 ECHO = 2
 INICIO = 4
@@ -15,7 +17,7 @@ time.sleep(0.5)
 print "Configuracion de los pines"
 GPIO.setup(INICIO, GPIO.IN)
 while GPIO.input(INICIO)==0:
-	print ""
+        pass
 	#Nada solo se queda aqui
 print "Comienzo el programa"
 print "takeoff"
