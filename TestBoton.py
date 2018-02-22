@@ -25,7 +25,7 @@ drone.takeoff()
 time.sleep(2)
 
 print "hovering"
-drone.hover()
+drone.hover()       
 time.sleep(3)
 
 print "land"
