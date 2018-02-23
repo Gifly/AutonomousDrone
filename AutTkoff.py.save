@@ -22,7 +22,14 @@ time.sleep(3)
 drone.moveForward()
 time.sleep(2)
 
+
 print "hovering"
+drone.hover()
+time.sleep(3)
+
+drone.moveBackward()
+time.sleep(2)
+
 drone.hover()
 time.sleep(3)
 
