@@ -26,3 +26,26 @@ def getImage():
 	img  = drone.VideoImage					# Copy video-image
 	pImg = cv2.resize(img,(360,640))
 	return img		# Returns image
+
+def getCenter():
+	frame = getImage()
+	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
+	lower = np.array([100, 150, 200])
+	upper = np.array([255, 255, 255])
+	mask = cv2.inRange(hsv, lower, upper)
+	res = cv2.bitwise_and(frame, frame, mask=mask)
+	res = cv2.medianBlur(res, 5)
+	cv2.imshow('Original image', frame)
+	cv2.imshow('Color Detector', res)
+
+	M = cv2.moments(mask)
+	x=-1
+	y=-1
+
+	if(M['m00'] != 0):
+		x = int(M['m10'] / M['m00'])
+		y = int(M['m01'] / M['m00'])
+	print x
+	print y
+	return x, y
