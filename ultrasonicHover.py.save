@@ -13,7 +13,7 @@ GPIO.setup(ECHO,GPIO.IN)
 def getDistance():
   GPIO.output(TRIG, False)
 
-  time.sleep(0.2)
+  time.sleep(0.08)
 
   GPIO.output(TRIG, True)
   time.sleep(0.00001)
@@ -56,7 +56,7 @@ def main():
 
     print "hovering"
     distance = getDistance()
-    while distance > 60:
+    while distance > 40:
         drone.hover()
 
         distance = getDistance()

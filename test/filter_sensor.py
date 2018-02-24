@@ -10,10 +10,23 @@ print "Distance Measurement In Progress"
 GPIO.setup(TRIG,GPIO.OUT)
 GPIO.setup(ECHO,GPIO.IN)
 
-while(1):
+
+def getDistance():
+  valores = []
+  total =0.0
+  for i in range (0,5):
+    valores.append(rawDistance())
+  valores.sort()
+  for y in range (1,4):
+    total= total + valores[y]
+  valorFil  = total/3
+  return  valorFil
+
+
+def rawDistance():
   GPIO.output(TRIG, False)
-  print "Waiting For Sensor To Settle"
-  time.sleep(0.08)
+
+  time.sleep(0.005)
 
   GPIO.output(TRIG, True)
   time.sleep(0.00001)
@@ -31,7 +44,11 @@ while(1):
 
   distance = round(distance, 2)
 
-  print "Distance:",distance,"cm"
+  return distance
+
+
+while(1):
+  print getDistance()
 
 GPIO.cleanup()
 
