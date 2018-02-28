@@ -3,8 +3,8 @@ import time
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
-TRIG = 3
-ECHO = 2
+TRIG = 15
+ECHO = 18
 INICIO = 4
 
 GPIO.setup(TRIG,GPIO.OUT)
