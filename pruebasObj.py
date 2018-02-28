@@ -3,7 +3,6 @@ import time
 #import RPi.GPIO as GPIO
 import vision
 import cv2
-import PID.PIDrone as PIDrone
 #importar libreria de Christian aqui
 
 def getImage():
@@ -34,7 +33,6 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDr = PIDrone(1,1,0)
 print "Initial configuration complete"
 #Waits for the Inicio button to be activated
 #while GPIO.input(INICIO)==0:
@@ -51,8 +49,7 @@ while not stop:
 	frame = getImage()
 	coordX, coordY = vision.getCenter(frame)
 	cv2.waitKey(1)
-	SpeedX =  PIDr.getVelocity(0.05,320,coordX)
-	if(coordY==-1 or coordX==-1 or SpeedX==0):
+	if(coordY==-1 or coordX==-1):
 		#Didn't find and object m8
 		print "No object found on frame"
 		#drone.stop()
@@ -65,7 +62,6 @@ while not stop:
 		#drone.move(SpeedX,0.1,SpeedY,0)
 	#stop=(GPIO.input(INICIO)==0)	
 #Exiting the program
-drone.land()
 drone.stopVideo()
 drone.shutdown()
 cv2.destroyAllWindows()
