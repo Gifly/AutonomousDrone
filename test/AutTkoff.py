@@ -19,7 +19,7 @@ time.sleep(2)
 
 print "hovering"
 drone.hover()
-time.sleep(10)
+time.sleep(5)
 
 print "land"
 drone.land()
