@@ -2,10 +2,21 @@ import time
 import cv2 
 import numpy as np
 def getCenter(frame):
+	file = open("colorVal.txt","r")
+	lowVal=[]
+	uppVal=[]
+	i=0
+	for line in file:
+		if(i<3):
+			lowVal.append(int(line))
+		else:
+			uppVal.append(int(line))
+		i+=1
+	file.close()
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
-	lower = np.array([100, 150, 150])
-	upper = np.array([255, 255, 255])
+	lower = np.array(lowVal)
+	upper = np.array(uppVal)
 	mask = cv2.inRange(hsv, lower, upper)
 	res = cv2.bitwise_and(frame, frame, mask=mask)
 	res = cv2.medianBlur(res, 5)
