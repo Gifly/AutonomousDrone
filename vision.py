@@ -4,7 +4,7 @@ import numpy as np
 def getCenter(frame):
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
-	lower = np.array([100, 150, 200])
+	lower = np.array([100, 150, 150])
 	upper = np.array([255, 255, 255])
 	mask = cv2.inRange(hsv, lower, upper)
 	res = cv2.bitwise_and(frame, frame, mask=mask)

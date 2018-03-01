@@ -3,13 +3,13 @@
 # Author: Christian Bentin
 # Date: 22-02-2018
 # ============================================================================================
-from PID import PID
+from ivPID import PID 
 
 
-class DronePID(PID):
+class DronePID(PID.PID):
 
 	def __init__(self, P, I, D):
-		PID.__init__(self, P, I, D)
+		PID.PID.__init__(self, P, I, D)
 		self.velocity = 0.0
 
 	def setSetPoint(self, SetPoint):
