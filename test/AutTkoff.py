@@ -1,4 +1,5 @@
-
+import sys
+sys.path.insert(0,"../")
 
 import api.ps_drone as ps_drone
 import time
@@ -8,7 +9,8 @@ drone = ps_drone.Drone()  # Start using drone
 
 drone.startup()  # Connects to drone and starts subprocesses
 drone.reset()  # Always good, at start
-
+drone.trim()
+drone.getSelfRotation(5)
 time.sleep(0.5)
 
 print "takeoff"
@@ -17,21 +19,7 @@ time.sleep(2)
 
 print "hovering"
 drone.hover()
-time.sleep(3)
-
-drone.moveForward()
-time.sleep(2)
-
-
-print "hovering"
-drone.hover()
-time.sleep(3)
-
-drone.moveBackward()
-time.sleep(2)
-
-drone.hover()
-time.sleep(3)
+time.sleep(10)
 
 print "land"
 drone.land()

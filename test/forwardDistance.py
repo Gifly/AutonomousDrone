@@ -1,6 +1,9 @@
+import RPi.GPIO as GPIO
+import sys
+sys.path.insert(0,"../")
 import api.ps_drone as ps_drone
 import time
-import RPi.GPIO as GPIO
+
 GPIO.setmode(GPIO.BCM)
 
 TRIG = 15
@@ -31,10 +34,14 @@ def rawDistance():
   GPIO.output(TRIG, False)
 
   while GPIO.input(ECHO)==0:
-    pulse_start = time.time()
+      pass
+  
+  pulse_start = time.time()
 
   while GPIO.input(ECHO)==1:
-    pulse_end = time.time()
+      pass
+  
+  pulse_end = time.time()
 
   pulse_duration = pulse_end - pulse_start
 
@@ -75,14 +82,14 @@ def main():
         distance = getDistance()
         print distance
         if distance <  61:
-            drone.moveBackward(0.3)
+            drone.moveBackward(0.4)
         else:
-            drone.moveForward(0.15)
+            drone.moveForward(0.1)
         print "next"
         
     #time.sleep(3)
     print "back"
-    drone.moveBackward(0.3)
+    drone.moveBackward(0.4)
     time.sleep(0.5)
     print "land"
     drone.land()
@@ -90,3 +97,4 @@ def main():
 if __name__ == "__main__":
     main()
     GPIO.cleanup()
+
