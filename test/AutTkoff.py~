@@ -1,4 +1,5 @@
-
+import sys
+sys.path.insert(0,"../")
 
 import api.ps_drone as ps_drone
 import time
@@ -19,12 +20,15 @@ time.sleep(2)
 print "hovering"
 drone.hover()
 time.sleep(5)
+<<<<<<< HEAD:AutTkoff.py
 #drone.moveForward()
 #time.sleep(2)
 
 #print "hovering"
 #drone.hover()
 #time.sleep(3)
+=======
+>>>>>>> c5fb9ab0f37b9f8f068de2e5f6a24d307e12a56a:test/AutTkoff.py
 
 print "land"
 drone.land()
