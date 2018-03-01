@@ -48,6 +48,7 @@ tiempoAnt = time.time()
 while not stop:
 	frame = getImage()
 	coordX, coordY = vision.getCenter(frame)
+	cv2.imshow("Imagen",frame)
 	cv2.waitKey(1)
 	if(coordY==-1 or coordX==-1):
 		#Didn't find and object m8

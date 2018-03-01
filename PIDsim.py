@@ -1,4 +1,4 @@
-import PIDrone
+import PID.PIDrone as PIDrone
 import math
 
 k_p = 1#1 Best sim value
