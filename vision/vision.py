@@ -28,7 +28,7 @@ def getCenter(frame):
 
 	x=-1
 	y=-1 
-	if(area >500000):
+	if(area >1000000):
 		x = int(M['m10'] / M['m00'])
 		y = int(M['m01'] / M['m00'])
 	print x, y, area
