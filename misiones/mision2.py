@@ -36,15 +36,28 @@ def main():
         else:
             drone.moveForward(0.1)
         print "next"
-    tof.stop_ranging()
     #time.sleep(3)
     print "back"
     drone.moveBackward(0.4)
     time.sleep(0.5)
+    drone.hover()
+    time.sleep(1)
+
+    thisTime = time.time()
+    distance = tof.get_distance()
+    while distance < 1000:
+        
+        drone.moveUp()
+        distance = tof.get_distance()
+        actualTime = time.time()
+        if (actualTime - thisTime) > 3 : 
+            drone.land()
+            print "TIME OUT"
+            break
+    drone.moveForward()
+    time.sleep(1)
     print "land"
     drone.land()
 
 if __name__ == "__main__":
     main()
-
-
