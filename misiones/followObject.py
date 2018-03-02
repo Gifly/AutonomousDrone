@@ -73,6 +73,7 @@ while not stop:
 		print "Found an object on frame"
 		if SpeedX == 0.0 and SpeedY==0.0:
 			drone.stop()
+			#pene
 		else: 
 			drone.move(SpeedX, 0.0, SpeedY, 0.0)
 	#stop=(GPIO.input(INICIO)==0)	
