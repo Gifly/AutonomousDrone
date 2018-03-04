@@ -54,8 +54,9 @@ drone.hover()
 time.sleep(2)
 print "Hovering waiting for an object to be detected"
 stop = False
+k=0
 #tiempoAnt = time.time()
-while not stop:
+while k != 27:
 	print "Velocidades: ",SpeedX,SpeedY
 	frame = getImage()
 	coordX, coordY = vision.getCenter(frame)
@@ -76,6 +77,7 @@ while not stop:
 		else: 
 			drone.move(SpeedX, 0.0, SpeedY, 0.0)
 	#stop=(GPIO.input(INICIO)==0)	
+	k =cv2.waitKey(5)
 #Exiting the program
 drone.land()
 drone.stopVideo()
