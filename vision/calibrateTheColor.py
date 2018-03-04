@@ -3,7 +3,31 @@ import numpy as np
 import sys
 sys.path.insert(0, '../')
 
-cap = cv2.VideoCapture(0)
+
+def getImage():
+    print "Tomo una imagen (getImage)"
+    IMC = drone.VideoImageCount 
+    while drone.VideoImageCount==IMC: time.sleep(0.01)  # Wait until the next video-frame
+    img  = drone.VideoImage 
+    pImg = cv2.resize(img,(360, 640), interpolation = cv2.INTER_CUBIC)               
+    return pImg      # Returns image
+
+print "Booting up the drone for color calibration"
+drone = ps_drone.Drone()                                                    
+drone.startup()
+drone.reset()
+drone.trim()                                     
+drone.getSelfRotation(5) 
+drone.setConfigAllID()
+#Drone's camera initial configuration
+print "Booting up the camera"
+drone.frontCam()
+drone.hdVideo()
+drone.startVideo()
+CDC = drone.ConfigDataCount
+while CDC == drone.ConfigDataCount: time.sleep(0.0001)  # Wait until it is done (after resync is done)
+drone.startVideo()
+
 cv2.namedWindow('HSV', cv2.WINDOW_NORMAL)
 cv2.resizeWindow('HSV', 290, 300)
 file = open("colorVal.txt","r")
@@ -42,47 +66,42 @@ k = 0
 while k != 27:
 
     # Take each frame
-    retVal, frame = cap.read()
-    frame = cv2.resize(frame,(640, 480), interpolation = cv2.INTER_CUBIC)
+    frame = getImage()
+    lowVal[0] = cv2.getTrackbarPos('HL', 'HSV')
+    lowVal[1] = cv2.getTrackbarPos('SL', 'HSV')
+    lowVal[2] = cv2.getTrackbarPos('VL', 'HSV')
+    uppVal[0] = cv2.getTrackbarPos('HU', 'HSV')
+    uppVal[1] = cv2.getTrackbarPos('SU', 'HSV')
+    uppVal[2] = cv2.getTrackbarPos('VU', 'HSV')
+    saveStatus = cv2.getTrackbarPos('SAVE','HSV')
 
-    if(retVal):
-        lowVal[0] = cv2.getTrackbarPos('HL', 'HSV')
-        lowVal[1] = cv2.getTrackbarPos('SL', 'HSV')
-        lowVal[2] = cv2.getTrackbarPos('VL', 'HSV')
-        uppVal[0] = cv2.getTrackbarPos('HU', 'HSV')
-        uppVal[1] = cv2.getTrackbarPos('SU', 'HSV')
-        uppVal[2] = cv2.getTrackbarPos('VU', 'HSV')
-        saveStatus = cv2.getTrackbarPos('SAVE','HSV')
+    # Convert BGR to HSV
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        # Convert BGR to HSV
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    # define range
+    lower = np.array([lowVal[0],lowVal[1], lowVal[2]])
+    upper = np.array([uppVal[0], uppVal[1], uppVal[2]])
 
-        # define range
-        lower = np.array([lowVal[0],lowVal[1], lowVal[2]])
-        upper = np.array([uppVal[0], uppVal[1], uppVal[2]])
+    # Threshold the HSV image
+    mask = cv2.inRange(hsv, lower, upper)
 
-        # Threshold the HSV image
-        mask = cv2.inRange(hsv, lower, upper)
+    # Bitwise-AND mask and original image
+    res = cv2.bitwise_and(frame, frame, mask=mask)
+    
+    if(saveStatus==1):
+        font = cv2.FONT_ITALIC
+        file=open("colorVal.txt","w")
+        file.write(str(lowVal[0]) + "\n")
+        file.write(str(lowVal[1]) + "\n")
+        file.write(str(lowVal[2]) + "\n")
+        file.write(str(uppVal[0]) + "\n")
+        file.write(str(uppVal[1]) + "\n")
+        file.write(str(uppVal[2]) + "\n")
+        cv2.putText(res,'Valor Guardado',(50,50),font,1,(255,255,255),2)
+        file.close()
 
-        # Bitwise-AND mask and original image
-        res = cv2.bitwise_and(frame, frame, mask=mask)
-        
-        if(saveStatus==1):
-            font = cv2.FONT_ITALIC
-            file=open("colorVal.txt","w")
-            file.write(str(lowVal[0]) + "\n")
-            file.write(str(lowVal[1]) + "\n")
-            file.write(str(lowVal[2]) + "\n")
-            file.write(str(uppVal[0]) + "\n")
-            file.write(str(uppVal[1]) + "\n")
-            file.write(str(uppVal[2]) + "\n")
-            cv2.putText(res,'Valor Guardado',(50,50),font,1,(255,255,255),2)
-            file.close()
-        cv2.imshow('res',res)
-        cv2.imshow('original', frame)
-        k = cv2.waitKey(5)
-       
-    else:
-        print("No se pudo tomar un frame")
+    cv2.imshow('res',res)
+    cv2.imshow('original', frame)
+    k = cv2.waitKey(5)
 
 cv2.destroyAllWindows()

@@ -13,8 +13,8 @@ def getImage():
 	IMC = drone.VideoImageCount	
 	while drone.VideoImageCount==IMC: time.sleep(0.01)	# Wait until the next video-frame
 	img  = drone.VideoImage					# Copy video-image
-	pImg = cv2.resize(img,(360,640))
-	return img		# Returns image
+	pImg = cv2.resize(img,(360,640), interpolation = cv2.INTER_CUBIC)
+	return pImg		# Returns image
 
 #INICIO = 2
 #Sets the pin's configuration
