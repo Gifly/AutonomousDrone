@@ -1,15 +1,17 @@
 import cv2
 import numpy as np
 import sys
+import time
 sys.path.insert(0, '../')
+import api.ps_drone as ps_drone
+
 
 
 def getImage():
-    print "Tomo una imagen (getImage)"
     IMC = drone.VideoImageCount 
     while drone.VideoImageCount==IMC: time.sleep(0.01)  # Wait until the next video-frame
     img  = drone.VideoImage 
-    pImg = cv2.resize(img,(360, 640), interpolation = cv2.INTER_CUBIC)               
+    pImg = cv2.resize(img,(640, 360), interpolation = cv2.INTER_CUBIC)               
     return pImg      # Returns image
 
 print "Booting up the drone for color calibration"
