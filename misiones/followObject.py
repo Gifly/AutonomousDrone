@@ -76,7 +76,7 @@ while k != 27:
 		else: 
 			drone.move(SpeedX, 0.0, SpeedY, 0.0)
 	#stop=(GPIO.input(INICIO)==0)	
-	k =cv2.waitKey(5)
+	k =cv2.waitKey(5)%256
 #Exiting the program
 drone.land()
 drone.stopVideo()

@@ -104,6 +104,6 @@ while k != 27:
 
     cv2.imshow('res',res)
     cv2.imshow('original', frame)
-    k = cv2.waitKey(5)
+    k = cv2.waitKey(5)%256
 
 cv2.destroyAllWindows()
