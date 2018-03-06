@@ -13,7 +13,7 @@ def getImage():
 	while drone.VideoImageCount==IMC: time.sleep(0.01)	# Wait until the next video-frame
 	img  = drone.VideoImage					# Copy video-image
 	pImg = cv2.resize(img,(640,360), interpolation = cv2.INTER_CUBIC)
-	return pImg		# Returns image
+	return img		# Returns image
 
 #INICIO = 2
 #Sets the pin's configuration
@@ -37,10 +37,10 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.047, 0.057, 0)
+PIDx = PIDrone.DronePID(0.045, 0.052, 0)
 PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
-print 'BATERRY: ',drone.getBattery()[0]
+print 'BATTERY: ',drone.getBattery()[0]
 #Waits for the Inicio button to be activated
 #while GPIO.input(INICIO)==0:
 	#pass

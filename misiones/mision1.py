@@ -27,11 +27,11 @@ def main():
     tof.start_ranging(4)
     time.sleep(0.001)
     distance = tof.get_distance()
-    while distance > 300:
+    while distance > 365:
         print "Distance: "
         distance = tof.get_distance()
         print distance
-        if distance <  301:
+        if distance <  366:
             drone.moveBackward(0.4)
         else:
             drone.moveForward(0.1)
@@ -40,7 +40,7 @@ def main():
     #time.sleep(3)
     print "back"
     drone.moveBackward(0.4)
-    time.sleep(0.5)
+    time.sleep(0.4)
     print "land"
     drone.land()
 
