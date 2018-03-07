@@ -37,7 +37,7 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.045, 0.052, 0)
+PIDx = PIDrone.DronePID(0.045, 0.051, 0)
 PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
 print 'BATTERY: ',drone.getBattery()[0]
@@ -50,31 +50,36 @@ print "Button pressed, starting mission, buckle up"
 drone.takeoff()
 time.sleep(2)
 drone.hover()
-time.sleep(2)
 print "Hovering waiting for an object to be detected"
 stop = False
 k=0
+SpeedZ = 0.0
 #tiempoAnt = time.time()
 while k != 27:
 	print "Velocidades: ",SpeedX,SpeedY
 	frame = getImage()
-	coordX, coordY = vision.getCenter(frame)
+	coordX, coordY, area = vision.getCenter(frame)
 	cv2.waitKey(1)
 	SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
 	SpeedY = PIDy.getVelocity(0.05,180,coordY)
 	if(coordY==-1 or coordX==-1):
-		#Didn't find and object m8
+		#Didn't find an object m8
 		print "No object found on frame"
 		SpeedX=0.0
 		SpeedY=0.0
+		SpeedZ=0.0
 		drone.hover()
 		drone.stop()
 	else:
+		if(area < 7000000):
+			SpeedZ = 0.05
+		else:
+			SpeedZ=0.0
 		print "Found an object on frame"
-		if SpeedX == 0.0 and SpeedY==0.0:
+		if SpeedX == 0.0 and SpeedY==0.0 :
 			drone.stop()
 		else: 
-			drone.move(SpeedX, 0.0, SpeedY, 0.0)
+			drone.move(SpeedX, SpeedZ, SpeedY, 0.0)
 	#stop=(GPIO.input(INICIO)==0)	
 	k =cv2.waitKey(5)%256
 #Exiting the program
