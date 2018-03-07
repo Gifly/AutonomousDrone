@@ -32,4 +32,4 @@ def getCenter(frame):
 		x = int(M['m10'] / M['m00'])
 		y = int(M['m01'] / M['m00'])
 	print x, y, area
-	return x, y
+	return x, y, area
