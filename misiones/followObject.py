@@ -55,13 +55,22 @@ stop = False
 k=0
 SpeedZ = 0.0
 #tiempoAnt = time.time()
-while k != 27:
-	print "Velocidades: ",SpeedX,SpeedY
+while k != 27:	
 	frame = getImage()
 	coordX, coordY, area = vision.getCenter(frame)
-	cv2.waitKey(1)
 	SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
 	SpeedY = PIDy.getVelocity(0.05,180,coordY)
+	print "Velocidades: ",SpeedX,SpeedY
+	FlechaX=SpeedX*620/0.50
+	FlechaY=-SpeedY*320/0.50
+	cv2.line(frame,(320,180),(int(FlechaX)+320,int(FlechaY)+180),(66,244,66),3)
+	
+	font = cv2.FONT_ITALIC
+	print(SpeedX, SpeedY)
+	print(FlechaX,FlechaY)
+	cv2.putText(frame,str(SpeedX),(50,20),font,1,(255,255,255),1)
+	cv2.putText(frame,str(SpeedY),(50,50),font,1,(255,255,255),1)
+
 	if(coordY==-1 or coordX==-1):
 		#Didn't find an object m8
 		print "No object found on frame"
@@ -71,8 +80,10 @@ while k != 27:
 		drone.hover()
 		drone.stop()
 	else:
+		cv2.circle(frame, (coordX,coordY),5,(66,244,66),-1)
 		if(area < 7000000):
-			SpeedZ = 0.05
+			pass
+			#SpeedZ = 0.05
 		else:
 			SpeedZ=0.0
 		print "Found an object on frame"
@@ -80,7 +91,8 @@ while k != 27:
 			drone.stop()
 		else: 
 			drone.move(SpeedX, SpeedZ, SpeedY, 0.0)
-	#stop=(GPIO.input(INICIO)==0)	
+	#stop=(GPIO.input(INICIO)==0)
+	cv2.imshow("Original image",frame)	
 	k =cv2.waitKey(5)%256
 #Exiting the program
 drone.land()
