@@ -37,7 +37,7 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.045, 0.051, 0)
+PIDx = PIDrone.DronePID(0.085, 0.01, 0)
 PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
 print 'BATTERY: ',drone.getBattery()[0]
@@ -60,8 +60,8 @@ while k != 27:
 	coordX, coordY, area = vision.getCenter(frame)
 	if(area>0):
 		distance = 4000000*pow(area,-0.709)
-	SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
-	SpeedY = PIDy.getVelocity(0.05,180,coordY)
+	SpeedX = -1.0*PIDx.getVelocity(0.005,320,coordX)
+	SpeedY = PIDy.getVelocity(0.005,180,coordY)
 	font = cv2.FONT_ITALIC
 	if(coordY==-1 or coordX==-1):
 		#Didn't find an object m8
