@@ -61,7 +61,8 @@ while k != 27:
 	FlechaX=SpeedX*620/0.50
 	FlechaY=-SpeedY*320/0.50
 	cv2.line(frame,(320,180),(int(FlechaX)+320,int(FlechaY)+180),(66,244,66),3)
-	
+	SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
+	SpeedY = PIDy.getVelocity(0.05,180,coordY)
 	font = cv2.FONT_ITALIC
 	print(SpeedX, SpeedY)
 	print(FlechaX,FlechaY)
@@ -77,13 +78,12 @@ while k != 27:
 		#drone.hover()
 	else:
 		cv2.circle(frame, (coordX,coordY),5,(66,244,66),-1)
-		SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
-		SpeedY = PIDy.getVelocity(0.05,180,coordY)
+		
 		print "Found an object on frame"
-		if(area < 7000000):
-			SpeedZ = 0.05
-		else:
-			SpeedZ=0.0
+		#if(area < 7000000):
+			#SpeedZ = 0.05
+		#else:
+			#SpeedZ=0.0
 		#print "Velocidad Z:", SpeedZ
 		#stop = True
 		#LLamar al PID
