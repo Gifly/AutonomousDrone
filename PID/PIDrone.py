@@ -20,12 +20,12 @@ class DronePID(PID.PID):
 		self.setSetPoint(setpoint)
 		self.setWindup(0.8)
 		self.velocity = self.update(feedback)/100
-		if(self.velocity > 0.25):
-			self.velocity = 0.25
-		elif(self.velocity < -0.25):
-			self.velocity = -0.25
-		elif(self.velocity<0.08 and self.velocity >=0):
-			self.velocity=0.0
-		elif(self.velocity>-0.08 and self.velocity <=0):
-			self.velocity=0.0
+		if(self.velocity > 0.1):
+			self.velocity = 0.1
+		elif(self.velocity < -0.1):
+			self.velocity = -0.1
+		#elif(self.velocity<0.045 and self.velocity >=0):
+			#self.velocity=0.0
+		#elif(self.velocity>-0.045 and self.velocity <=0):
+			#self.velocity=0.0
 		return self.velocity

@@ -38,7 +38,8 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.045, 0.051, 0)
+#Estos valores funcionan para seguir el centro
+PIDx = PIDrone.DronePID(0.065, 0.051, 0.0031)
 PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
 SpeedX=0
@@ -66,8 +67,8 @@ while k != 27:
 	font = cv2.FONT_ITALIC
 	print(SpeedX, SpeedY)
 	print(FlechaX,FlechaY)
-	cv2.putText(frame,str(SpeedX),(50,20),font,1,(255,255,255),1)
-	cv2.putText(frame,str(SpeedY),(50,50),font,1,(255,255,255),1)
+	cv2.putText(frame,str(SpeedX),(50,20),font,0.6,(66,244,66),2)
+	cv2.putText(frame,str(SpeedY),(50,50),font,0.6,(66,244,66),2)
 	
 	if(coordY==-1 or coordX==-1):
 		#Didn't find and object m8

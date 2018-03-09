@@ -37,8 +37,8 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.045, 0.051, 0)
-PIDy = PIDrone.DronePID(0.21, 0.12, 0)
+PIDx = PIDrone.DronePID(0.008, 0, 0)
+PIDy = PIDrone.DronePID(0.1, 0, 0)
 print "Initial configuration complete"
 print 'BATTERY: ',drone.getBattery()[0]
 #Waits for the Inicio button to be activated
@@ -60,8 +60,8 @@ while k != 27:
 	coordX, coordY, area = vision.getCenter(frame)
 	if(area>0):
 		distance = 4000000*pow(area,-0.709)
-	SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
-	SpeedY = PIDy.getVelocity(0.05,180,coordY)
+	SpeedX = -1.0*PIDx.getVelocity(0.005,320,coordX)
+	SpeedY = PIDy.getVelocity(0.005,180,coordY)
 	font = cv2.FONT_ITALIC
 	if(coordY==-1 or coordX==-1):
 		#Didn't find an object m8
@@ -77,7 +77,7 @@ while k != 27:
 		if(SpeedX==0.0 and SpeedY==0.0):
 			drone.stop()
 			time.sleep(0.01)
-			#if(distance>40):
+			#if(distance>90):
 				#SpeedZ=0.09
 			#else:
 				#SpeedZ=0.0
@@ -92,6 +92,7 @@ while k != 27:
 	print(FlechaX,FlechaY)
 	cv2.putText(frame,str(SpeedX),(50,20),font,0.5,(255,255,255),1)
 	cv2.putText(frame,str(SpeedY),(50,50),font,0.5,(255,255,255),1)
+#	cv2.putText(frame,str(distance),(50,70),font,0.5,(255,255,255),1)
 	cv2.imshow("Original image",frame)	
 	k =cv2.waitKey(5)%256
 #Exiting the program
