@@ -55,8 +55,10 @@ print "Hovering waiting for an object to be detected"
 stop = False
 tiempoAnt = time.time()
 k=0
+
 while k != 27:
 	frame = getImage()
+	vision.getIndicators(frame)
 	coordX, coordY, area = vision.getCenter(frame)
 	FlechaX=SpeedX*620/0.50
 	FlechaY=-SpeedY*320/0.50

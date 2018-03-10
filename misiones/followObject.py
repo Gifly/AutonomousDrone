@@ -67,7 +67,7 @@ while k != 27:
 		#Didn't find an object m8
 		print "No object found on frame"
 		SpeedX=0.0
-		SpeedY=0.0
+		SpeedY=0.0q
 		SpeedZ=0.0
 		drone.hover()
 		drone.stop()

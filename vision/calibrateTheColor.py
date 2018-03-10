@@ -2,10 +2,21 @@ import cv2
 import numpy as np
 import sys
 import time
+import vision
 sys.path.insert(0, '../')
 import api.ps_drone as ps_drone
 
+def isCircle(cnt):
+    template = cv2.imread('images/circle.jpg',0)
+    ret, thresh = cv2.threshold(template, 127, 255, 0)
 
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+
+    match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
+
+    if match < 0.5:
+        return True
+    return False
 
 def getImage():
     IMC = drone.VideoImageCount 
@@ -37,7 +48,7 @@ lowVal=[]
 uppVal=[]
 lowValInd = []
 uppValInd =[]
-
+kernel = np.ones((5,5), np.uint8)
 
 i=0
 for line in file:
@@ -124,21 +135,23 @@ while k != 27:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Threshold the HSV image
-    #print lowerInd
     mask = cv2.inRange(hsv, lower, upper)
     maskInd = cv2.inRange(hsv,lowerInd,upperInd)
-
-    cv2.imshow('Nada',maskInd)
+    maskInd = cv2.morphologyEx(maskInd,cv2.MORPH_OPEN,kernel)
     # Bitwise-AND mask and original image
     res = cv2.bitwise_and(frame, frame, mask=mask)
+    #Get contoursq
     contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     n = len(contours)
     contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
     print len(contours)
-    if(len(contours)>2):
-        Puntos.append(contours[0])
-        Puntos.append(contours[1])
-        cv2.drawContours(frame,Puntos,-1,(0,255,0),2)
+    if(len(contours)>=2):
+        for i in range (0,2):
+            if(isCircle(contours[i])):
+                Puntos.append(contours[i])
+        
+    if(Puntos):
+        cv2.drawContours(res,Puntos,-1,(0,255,0),2)
     if(saveStatus==1):
         font = cv2.FONT_ITALIC
         file=open("colorVal.txt","w")
@@ -162,7 +175,6 @@ while k != 27:
         cv2.putText(res,'Valor Guardado',(50,50),font,1,(255,255,255),2)
         file.close()
     
-    cv2.imshow('Puntitos',cv2.bitwise_and(hsv,hsv,mask=maskInd))
     cv2.imshow('res',res)
     cv2.imshow('original', frame)
     k = cv2.waitKey(5)%256
