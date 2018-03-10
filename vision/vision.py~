@@ -26,7 +26,7 @@ def getCenter(frame):
 
 	x=-1
 	y=-1 
-	if(area >300000):
+	if(area >1000000):
 		x = int(M['m10'] / M['m00'])
 		y = int(M['m01'] / M['m00'])
 		cv2.circle(res, (x,y),5,(66,244,66),-1)

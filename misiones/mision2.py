@@ -43,7 +43,7 @@ def main():
     time.sleep(0.5)
     drone.hover()
     time.sleep(1)
-    
+
     #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
     #WITH A TIME OUT
     thisTime = time.time()

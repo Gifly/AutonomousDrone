@@ -27,6 +27,7 @@ def main():
     tof.start_ranging(4)
     time.sleep(0.001)
     distance = tof.get_distance()
+
     print "Distance: "
     print distance
     while distance > 900:
