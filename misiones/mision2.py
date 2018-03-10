@@ -42,7 +42,6 @@ def main():
     time.sleep(0.5)
     drone.hover()
     time.sleep(1)
-
     thisTime = time.time()
     distance = tof.get_distance()
     while distance < 1000:

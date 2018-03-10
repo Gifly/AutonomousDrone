@@ -118,13 +118,10 @@ while k != 27:
     uppValInd[0] = cv2.getTrackbarPos('HIUP', 'HSV')
     uppValInd[1] = cv2.getTrackbarPos('SIUP', 'HSV')
     uppValInd[2] = cv2.getTrackbarPos('VIUP', 'HSV')
-
     saveStatus = cv2.getTrackbarPos('SAVE','HSV')
 
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-
 
     # Threshold the HSV image
     #print lowerInd
@@ -142,7 +139,6 @@ while k != 27:
         Puntos.append(contours[0])
         Puntos.append(contours[1])
         cv2.drawContours(frame,Puntos,-1,(0,255,0),2)
-
     if(saveStatus==1):
         font = cv2.FONT_ITALIC
         file=open("colorVal.txt","w")
