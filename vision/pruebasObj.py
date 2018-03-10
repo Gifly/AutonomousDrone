@@ -16,12 +16,6 @@ def getImage():
 	pImg = cv2.resize(img,(360,640))
 	return img		# Returns image
 
-#INICIO = 2
-#Sets the pin's configuration
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setup(INICIO, GPIO.IN)
-#Drone initial configuration
-
 
 print "Booting up the drone"
 drone = ps_drone.Drone()													
@@ -43,6 +37,8 @@ PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
 SpeedX=0
 SpeedY=0
+areaIdeal = 360*640/3
+
 #Waits for the Inicio button to be activated
 #while GPIO.input(INICIO)==0:
 	#pass
@@ -56,10 +52,10 @@ stop = False
 tiempoAnt = time.time()
 k=0
 
-while k != 27:
+while k != 27:   
 	frame = getImage()
 	IndicatorDistance, frame = vision.getIndicators(frame)
-	print IndicatorDistance
+	print "Distancia entre indicadores: " IndicatorDistance
 	coordX, coordY, area = vision.getCenter(frame)
 	FlechaX=SpeedX*620/0.50
 	FlechaY=-SpeedY*320/0.50
@@ -77,26 +73,16 @@ while k != 27:
 		print "No object found on frame"
 		SpeedX=0.0
 		SpeedY=0.0
-		#drone.stop()
-		#drone.hover()
+
 	else:
 		cv2.circle(frame, (coordX,coordY),5,(66,244,66),-1)
 		
 		print "Found an object on frame"
-		#if(area < 7000000):
-			#SpeedZ = 0.05
-		#else:
-			#SpeedZ=0.0
-		#print "Velocidad Z:", SpeedZ
-		#stop = True
-		#LLamar al PID
 	cv2.imshow("Original image",frame)
 	k =cv2.waitKey(5)%256
-		#drone.move(SpeedX,0.1,SpeedY,0)
-	#stop=(GPIO.input(INICIO)==0)	
-#Exiting the program
+print "Exiting the program"		
 drone.stopVideo()
 drone.shutdown()
 cv2.destroyAllWindows()
 cv2.destroyAllWindows()
-#GPIO.cleanup()
+

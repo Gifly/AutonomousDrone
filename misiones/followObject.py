@@ -15,11 +15,8 @@ def getImage():
 	pImg = cv2.resize(img,(640,360), interpolation = cv2.INTER_CUBIC)
 	return img		# Returns image
 
-#INICIO = 2
-#Sets the pin's configuration
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setup(INICIO, GPIO.IN)
-#Drone initial configuration
+k=0
+SpeedZ = 0.0
 SpeedX=0.0
 SpeedY=0.0
 print "Booting up the drone"
@@ -29,6 +26,7 @@ drone.reset()
 drone.trim()                                     
 drone.getSelfRotation(5) 
 drone.setConfigAllID()
+
 #Drone's camera initial configuration
 print "Booting up the camera"
 drone.frontCam()
@@ -41,20 +39,12 @@ PIDx = PIDrone.DronePID(0.047, 0.057, 0)
 PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
 print 'BATTERY: ',drone.getBattery()[0]
-#Waits for the Inicio button to be activated
-#while GPIO.input(INICIO)==0:
-	#pass
-print "Button pressed, starting mission, buckle up"
-
 
 drone.takeoff()
 time.sleep(2)
 drone.hover()
 print "Hovering waiting for an object to be detected"
-stop = False
-k=0
-SpeedZ = 0.0
-#tiempoAnt = time.time()
+
 while k != 27:	
 	frame = getImage()
 	coordX, coordY, area = vision.getCenter(frame)
@@ -63,6 +53,7 @@ while k != 27:
 	SpeedX = -1.0*PIDx.getVelocity(0.005,320,coordX)
 	SpeedY = PIDy.getVelocity(0.005,180,coordY)
 	font = cv2.FONT_ITALIC
+	
 	if(coordY==-1 or coordX==-1):
 		#Didn't find an object m8
 		print "No object found on frame"
