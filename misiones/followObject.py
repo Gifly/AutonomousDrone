@@ -38,6 +38,7 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
+<<<<<<< Updated upstream
 PIDx = PIDrone.DronePID(0.047, 0.057, 0)
 PIDy = PIDrone.DronePID(0.21, 0.12, 0)
 print "Initial configuration complete"
