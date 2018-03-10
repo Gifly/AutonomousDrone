@@ -58,7 +58,8 @@ k=0
 
 while k != 27:
 	frame = getImage()
-	vision.getIndicators(frame)
+	IndicatorDistance, frame = vision.getIndicators(frame)
+	print IndicatorDistance
 	coordX, coordY, area = vision.getCenter(frame)
 	FlechaX=SpeedX*620/0.50
 	FlechaY=-SpeedY*320/0.50

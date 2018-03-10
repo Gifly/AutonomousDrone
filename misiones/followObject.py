@@ -67,12 +67,13 @@ while k != 27:
 		#Didn't find an object m8
 		print "No object found on frame"
 		SpeedX=0.0
-		SpeedY=0.0q
+		SpeedY=0.0
 		SpeedZ=0.0
 		drone.hover()
 		drone.stop()
 		cv2.putText(frame,"Hovering",(50,70),font,0.5,(0,0,255),1)
 	else:
+		#Found the object on frame
 		cv2.circle(frame, (coordX,coordY),5,(66,244,66),-1)
 		if(SpeedX==0.0 and SpeedY==0.0):
 			drone.stop()

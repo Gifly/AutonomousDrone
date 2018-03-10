@@ -52,19 +52,34 @@ def getIndicators(frame):
 	lowerInd = np.array ([lowValInd[0],lowValInd[1],lowValInd[2]])
 	upperInd = np.array([uppValInd[0],uppValInd[1],uppValInd[2]])
 	maskInd = cv2.inRange(hsv,lowerInd,upperInd)
+	maskInd = cv2.morphologyEx(maskInd,cv2.MORPH_OPEN,kernel)
 	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
 	print len(contours)
-	for c in contours:
-		if(isCircle(c)):
-			Puntos.append(c)
-	if(Puntos):
-		cv2.drawContours(res,Puntos,-1,(0,255,0),2)
+    if(len(contours)>=2):
+        for i in range (0,2):
+            if(isCircle(contours[i])):
+                Puntos.append(contours[i])
+    
+    distance = -1
+    #Gets X and Y axis of both points
+    if(Puntos):
+        cv2.drawContours(res,Puntos,-1,(0,255,0),2)
+        if(len(Puntos)>=2):
+		    P1 = cv2.moments(Puntos[0])
+		    P2 = cv2.moments(Puntos[1])
+		    Px1 = int(P1['m10'] / P1['m00'])
+			Py1 = int(P1['m01'] / P1['m00'])
+			
+			Px2 = int(P2['m10'] / P2['m00'])
+			Py2 = int(P2['m01'] / P2['m00'])
+		#Calculates relative distance between points 
+			distance = sqrt(pow(Px1-PX2,2)+pow(Px1-PX2,2))
+	cv2.imshow('Indicators',res)
+	return distance, res
 
-	    
-	#Buscar figura en el template  
-	
+		
 
     #Encontrar los centros or wtvr
 
