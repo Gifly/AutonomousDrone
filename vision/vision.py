@@ -1,18 +1,30 @@
 import time
 import cv2 
 import numpy as np
-def getCenter(frame):
-	file = open("colorVal.txt","r")
-	lowVal=[]
-	uppVal=[]
+import math
+import os
+lowVal=[]
+uppVal=[]
+lowValInd=[]
+uppValInd=[]
+def setRange():
+	cwd = os.getcwd()
+	print "cwd: ",cwd
+	file = open("../vision/colorV.txt","r")
 	i=0
 	for line in file:
 		if(i<3):
 			lowVal.append(int(line))
 		elif(i<6):
 			uppVal.append(int(line))
+		elif(i<9):
+			lowValInd.append(int(line))
+		else:
+			uppValInd.append(int(line))
 		i+=1
 	file.close()
+def getCenter(frame):
+	
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
 	lower = np.array(lowVal)
@@ -35,19 +47,10 @@ def getCenter(frame):
 	return x, y,area
 
 def getIndicators(frame):  
-	file = open('colorVal.txt')
-	lowValInd=[]
-	uppValInd=[]
+	
 	Puntos =[]
-	i=0
-	for line in file:
-		if(i>6):
-			lowValInd.append(int(line))
-		elif(i>9):
-			#print line
-			uppValInd.append(int(line))
-		i+=1
-	file.close()
+	
+	kernel = np.ones((5,5),np.uint8)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	lowerInd = np.array ([lowValInd[0],lowValInd[1],lowValInd[2]])
 	upperInd = np.array([uppValInd[0],uppValInd[1],uppValInd[2]])
@@ -56,35 +59,34 @@ def getIndicators(frame):
 	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
-	print len(contours)
-    if(len(contours)>=2):
-        for i in range (0,2):
-            if(isCircle(contours[i])):
-                Puntos.append(contours[i])
+	if(len(contours)>=2):
+		for i in range (0,2):
+			if(isCircle(contours[i])):
+				Puntos.append(contours[i])
     
-    distance = -1
-    #Gets X and Y axis of both points
-    if(Puntos):
-        cv2.drawContours(res,Puntos,-1,(0,255,0),2)
-        if(len(Puntos)>=2):
-		    P1 = cv2.moments(Puntos[0])
-		    P2 = cv2.moments(Puntos[1])
-		    Px1 = int(P1['m10'] / P1['m00'])
-			Py1 = int(P1['m01'] / P1['m00'])
-			
-			Px2 = int(P2['m10'] / P2['m00'])
-			Py2 = int(P2['m01'] / P2['m00'])
-		#Calculates relative distance between points 
-			distance = sqrt(pow(Px1-PX2,2)+pow(Px1-PX2,2))
-	cv2.imshow('Indicators',res)
-	return distance, res
+	distance = -1
+	#Gets X and Y axis of both points
+	if(Puntos):
+		cv2.drawContours(frame,Puntos,-1,(0,255,0),2)
+	if(len(Puntos)>=2):
+		P1 = cv2.moments(Puntos[0])
+		P2 = cv2.moments(Puntos[1])
+		Px1 = int(P1['m10'] / P1['m00'])
+		Py1 = int(P1['m01'] / P1['m00'])
+
+		Px2 = int(P2['m10'] / P2['m00'])
+		Py2 = int(P2['m01'] / P2['m00'])
+	#Calculates relative distance between points
+		distance = math.sqrt(pow(Px1-Px2,2)+pow(Px1-Px2,2))
+	#cv2.imshow('Indicators',frame)
+	return distance, len(Puntos), frame
 
 		
 
     #Encontrar los centros or wtvr
 
 def isCircle(cnt):
-	template = cv2.imread('images/circle.jpg',0)
+	template = cv2.imread('../vision/images/circle.jpg',0)
 	ret, thresh = cv2.threshold(template, 127, 255, 0)
 
 	contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)

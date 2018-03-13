@@ -32,8 +32,8 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.045, 0.051, 0)
-PIDy = PIDrone.DronePID(0.21, 0.12, 0)
+PIDx = PIDrone.DronePID(0.051, 0.047, 0)
+PIDy = PIDrone.DronePID(0.091, 0.12, 0)
 print "Initial configuration complete"
 SpeedX=0
 SpeedY=0
@@ -42,7 +42,7 @@ areaIdeal = 360*640/3
 #Waits for the Inicio button to be activated
 #while GPIO.input(INICIO)==0:
 	#pass
-print "Button pressed, starting mission, buckle up"
+print "Button pressed, starting mission, buckle up!"
 
 #drone.takeoff()
 #time.sleep(2)
@@ -55,7 +55,7 @@ k=0
 while k != 27:   
 	frame = getImage()
 	IndicatorDistance, frame = vision.getIndicators(frame)
-	print "Distancia entre indicadores: " IndicatorDistance
+	print "Distancia entre indicadores: ", IndicatorDistance
 	coordX, coordY, area = vision.getCenter(frame)
 	FlechaX=SpeedX*620/0.50
 	FlechaY=-SpeedY*320/0.50
@@ -63,10 +63,10 @@ while k != 27:
 	SpeedX = -1.0*PIDx.getVelocity(0.05,320,coordX)
 	SpeedY = PIDy.getVelocity(0.05,180,coordY)
 	font = cv2.FONT_ITALIC
-	print(SpeedX, SpeedY)
-	print(FlechaX,FlechaY)
-	cv2.putText(frame,str(SpeedX),(50,20),font,1,(255,255,255),1)
-	cv2.putText(frame,str(SpeedY),(50,50),font,1,(255,255,255),1)
+	#if(SpeedX<0.09 and SpeedX>0.05):
+	#	SpeedX = 0.05
+	#elif(SpeedX<0.05):
+	#	SpeedX=0.0
 	
 	if(coordY==-1 or coordX==-1):
 		#Didn't find and object m8
@@ -74,10 +74,16 @@ while k != 27:
 		SpeedX=0.0
 		SpeedY=0.0
 
+
 	else:
 		cv2.circle(frame, (coordX,coordY),5,(66,244,66),-1)
 		
 		print "Found an object on frame"
+	#print(SpeedX, SpeedY)
+	#print(FlechaX,FlechaY)
+	cv2.putText(frame,str(SpeedX),(50,30),font,1,(255,255,255),1)
+	cv2.putText(frame,str(SpeedY),(50,60),font,1,(255,255,255),1)
+
 	cv2.imshow("Original image",frame)
 	k =cv2.waitKey(5)%256
 print "Exiting the program"		

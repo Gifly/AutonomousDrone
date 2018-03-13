@@ -43,7 +43,7 @@ drone.startVideo()
 
 cv2.namedWindow('HSV', cv2.WINDOW_NORMAL)
 cv2.resizeWindow('HSV', 290, 300)
-file = open("colorVal.txt","r")
+file = open("colorV.txt","r")
 lowVal=[]
 uppVal=[]
 lowValInd = []
