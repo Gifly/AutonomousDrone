@@ -96,3 +96,39 @@ def isCircle(cnt):
 	if match < 0.45:
 		return True
 	return False
+
+def getPared(frame,lowT):
+	Rectan=[]
+	area=0
+	kernel = np.ones((5,5),np.uint8)
+	#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	frameCl = cv2.morphologyEx(frame,cv2.MORPH_OPEN,kernel)
+	frameCl = cv2.bilateralFilter(frameCl,9,75,75)
+	kanye = cv2.Canny(frameCl,lowT, 3*lowT)
+	cv2.imshow("Canny",kanye)
+	contours , hierarchy = cv2.findContours(kanye, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	n = len(contours)
+	#print n
+	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
+	cv2.drawContours(frame,contours,-1,(0,50,0),1)
+	if(len(contours)>=1):
+		cv2.drawContours(frame,contours[0],-1,(255,0,0),2)
+		if(isRectangle(contours[0])):
+			#print "Encontre un rectangulo"
+			cv2.drawContours(frame,contours[0],-1,(0,0,255),2)
+    		M = cv2.moments(contours[0])
+    		area = M['m00']
+	return area,frame
+	#Gets X and Y axis of both points
+
+def isRectangle(cnt):
+	template = cv2.imread('../vision/images/rectangle.png',0)
+	ret, thresh = cv2.threshold(template, 127, 255, 0)
+
+	contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+
+	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
+
+	if match < 0.20:
+		return True
+	return False
