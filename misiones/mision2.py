@@ -1,8 +1,20 @@
-import VL53L0X
 import sys
 sys.path.insert(0,"../")
 import api.ps_drone as ps_drone
 import time
+from vision import vision
+
+def filterInd():
+    values =[]
+    total  0.0
+    for i in range(0,5):
+        values.append(getKeypoints())
+    values.sort()
+    for y in range(1,4):
+        total = total+values[y]
+    valorFin = total/3
+    return valorFin
+
 
 def main():
 
@@ -15,46 +27,28 @@ def main():
     #drone.getSelfRotation(5)
     time.sleep(0.5)
     print "BATERIA ACTUAL: ", drone.getBattery()[0]
-
+    indMin = 1000
     print "Comienzo el programa"
     print "takeoff"
     drone.takeoff()
     time.sleep(2)
     drone.hover()
     time.sleep(2)
-    #drone.setSpeed(0.1)
     print "hovering"
-    tof.start_ranging(4)
-    time.sleep(0.001)
-    distance = tof.get_distance()
-    while distance > 300:
-        print "Distance: "
-        distance = tof.get_distance()
-        print distance
-        if distance <  301:
-            drone.moveBackward(0.4)
-        else:
-            drone.moveForward(0.1)
-        print "next"
-    #time.sleep(3)
-    print "back"
-    drone.moveBackward(0.4)
-    time.sleep(0.5)
-    drone.hover()
-    time.sleep(1)
-    thisTime = time.time()
-    distance = tof.get_distance()
-    while distance < 1000:
-        
-        drone.moveUp()
-        distance = tof.get_distance()
-        actualTime = time.time()
-        if (actualTime - thisTime) > 3 : 
-            drone.land()
-            print "TIME OUT"
-            break
-    drone.moveForward()
-    time.sleep(1)
+    k=0
+    finalized=False
+    while k!=27 or not(finalized) :
+        k =cv2.waitKey(5)%256
+        drone.moveForward()
+        measuresPass=0
+        if(filterInd()>indMin):
+            drone.hover()
+            for i in range(0,3):
+                if(filterInd()>indMin):
+                    measuresPass+=1
+                    print "Distance achieved", measuresPass
+        finalized = (measuresPass==3)          
+
     print "land"
     drone.land()
 
