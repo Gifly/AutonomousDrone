@@ -4,29 +4,46 @@ import api.ps_drone as ps_drone
 import time
 from vision import vision
 
+
+def getImage():
+    IMC = drone.VideoImageCount 
+    while drone.VideoImageCount==IMC: time.sleep(0.01)  # Wait until the next video-frame
+    img  = drone.VideoImage                 # Copy video-image
+    pImg = cv2.resize(img,(640,360), interpolation = cv2.INTER_CUBIC)
+    return img      # Returns image
+
 def filterInd():
     values =[]
     total  0.0
     for i in range(0,5):
-        values.append(getKeypoints())
+        values.append(vision.getKeypoints(getImage()))
     values.sort()
     for y in range(1,4):
         total = total+values[y]
     valorFin = total/3
     return valorFin
 
-
 def main():
 
-    drone = ps_drone.Drone()  # Start using drone
-    tof = VL53L0X.VL53L0X()
-    print "Configuracion del drone"
-    drone.startup()  # Connects to drone and starts subprocesses
-    drone.reset()  # Always good, at start
-    drone.trim()                                       # Recalibrate sensors
-    #drone.getSelfRotation(5)
+    print "Booting up the drone"
+    drone = ps_drone.Drone()                                                    
+    drone.startup()
+    drone.reset()
+    drone.trim()                                     
+    drone.getSelfRotation(5) 
+    drone.setConfigAllID()
+
+    print "Booting up the camera"
+    drone.frontCam()
+    drone.hdVideo()
+    drone.startVideo()
+    CDC = drone.ConfigDataCount
+    while CDC == drone.ConfigDataCount: time.sleep(0.0001)  # Wait until it is done (after resync is done)
+    drone.startVideo()
+
     time.sleep(0.5)
     print "BATERIA ACTUAL: ", drone.getBattery()[0]
+    
     indMin = 1000
     print "Comienzo el programa"
     print "takeoff"
