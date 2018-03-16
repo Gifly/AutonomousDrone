@@ -13,6 +13,23 @@ def main():
 	drone.getSelfRotation(5)
 	time.sleep(0.5)
 	print "BATERIA ACTUAL: ", drone.getBattery()[0]
+	
+	'''
+	CDC = drone.ConfigDataCount
+	while CDC == drone.ConfigDataCount: time.sleep(0.0001)  # Wait until it is done (after resync is done)
+	for i in drone.ConfigData:
+		if i[0]== "control:euler_angle_max" or i[0]== "control:control_vz_max" or i[0]== "control:control_yaw":
+			print str(i)
+	drone.setConfig("control:euler_angle_max","0.208")
+	drone.setConfig("control:control_vz_max","800")
+	drone.setConfig("control:control_yaw","1.75")
+	while CDC == drone.ConfigDataCount: time.sleep(0.15)
+	for i in drone.ConfigData:
+		if i[0]== "control:euler_angle_max" or i[0]== "control:control_vz_max" or i[0]== "control:control_yaw":
+			print str(i)
+	print "Bateria: ", drone.getBattery()[0]
+	
+	'''
 	drone.useDemoMode(False)
 	drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
 	print "Obteniendo paquete de medidas"
@@ -23,19 +40,16 @@ def main():
 	drone.hover()
 	time.sleep(3)
 
-
 	stop = False
 	NDC = drone.NavDataCount
 	alti = 0.0
-	rpm = 5000.0
-	while alti < 2500:
+	while alti < 1600:
 		while drone.NavDataCount == NDC:   time.sleep(0.001)
 		if drone.getKey(): 	stop = True
 		NDC = drone.NavDataCount
 		alti = drone.NavData["altitude"][3]
 		print "Altitude: " + str(alti)
-		print "RPM: " +str(rpm)
-		drone.moveUp(1.0)
+		drone.moveUp(0.9)
 	drone.moveDown(0.6)
 	time.sleep(1)
 	drone.hover()
