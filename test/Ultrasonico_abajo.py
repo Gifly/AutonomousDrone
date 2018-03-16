@@ -56,7 +56,7 @@ def main():
 	drone.hover()
 	time.sleep(1)
 	print "land"
-	drone.land(),
+	drone.land()
 
 if __name__ == "__main__":
     main()

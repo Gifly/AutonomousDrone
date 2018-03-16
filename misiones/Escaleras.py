@@ -26,68 +26,47 @@ def main():
     print "hovering"
     tof.start_ranging(4)
     time.sleep(0.001)
+    drone.useDemoMode(False)
+    drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
+    time.sleep(1.0)
     #THIS PART GETS NEAR THE OBSTACLE
-    distance = tof.get_distance()
-    while distance > 1000:
-        print "Distance: "
+    for i in range(0,1):
         distance = tof.get_distance()
-        print distance
-        if distance < 1001:
-            drone.moveBackward(0.5)
-        else:
-            drone.moveForward(0.1)
-        print "next"
-    #time.sleep(3)
-    print "back"
-    drone.moveBackward(0.5)
-    time.sleep(0.5)
-    drone.hover()
-    time.sleep(4)
+        
+        while distance > 1000:
+            print "Distance: "
+            distance = tof.get_distance()
+            print distance
+            if distance < 1001:
+                drone.moveBackward(0.5)
+            else:
+                drone.moveForward(0.1)
+            print "next"
+        #time.sleep(3)
+        print "back"
+        drone.moveBackward(0.5)
+        time.sleep(0.5)
+        drone.hover()
+        time.sleep(4)
 
-    #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
-    #WITH A TIME OUT
-    thisTime = time.time()
-    distance = tof.get_distance()
-    while distance < 5000:
-        print  "Distancia subiendo ", distance
-        drone.moveUp(0.9)
-        distance = tof.get_distance()
-        actualTime = time.time()
-        if (actualTime - thisTime) > 7 : 
-            drone.land()
-            print "TIME OUT"
-            break
-    print "FINISHED GOING UP"
-    drone.moveUp(0.8)
-    time.sleep(3)
+        #THIS PART GOES UP 1.2 METERS USING DRONES INTEGRATED ULTRASONIC SENSOR
+        NDC = drone.NavDataCount
+        altitude = 0.0
+        while alti < 1600:
+            while drone.NavDataCount == NDC:   time.sleep(0.001)
+            if drone.getKey():  stop = True
+            NDC = drone.NavDataCount
+            alti = drone.NavData["altitude"][3]
+            print "Altitude: " + str(alti)
+            drone.moveUp(0.9)  
     drone.hover()
     time.sleep(2)
-    #THIS LANDS THE DRONE AFTER THE TIME OUT OR WHEN
-    #IT DETECTS A WALL
-    thisTime = time.time()
-    distance = tof.get_distance()
-    while distance > 1500:
-        print "Distance: "
-        distance = tof.get_distance()
-        print distance
-        if distance <  1501:
-            drone.moveBackward(0.5)
-        else:
-            drone.moveForward(0.1)
-        actualTime = time.time()
-        if (actualTime - thisTime) > 3 : 
-            drone.land()
-            print "TIME OUT"
-            break
- 
-    print "back"
-    drone.moveBackward(0.5)
-    time.sleep(0.5)
+    drone.moveLeft(0.3)
+    time sleep(2)
     drone.hover()
-    time.sleep(1)
-
-    print "land"
+    time.sleep(2)
     drone.land()
+
 
 if __name__ == "__main__":
     main()
