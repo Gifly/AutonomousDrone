@@ -30,22 +30,22 @@ def main():
 
     print "Distance: "
     print distance
-    while distance > 900:
+    while distance > 1000:
         print "Distance: "
         distance = tof.get_distance()
         print distance
-        if distance < 901:
+        if distance < 1001:
             drone.moveBackward(0.5)
         else:
-            drone.moveForward(0.15)
+            drone.moveForward(0.08)
         print "next"
     tof.stop_ranging()
     #time.sleep(3)
     print "back"
-    drone.moveBackward(0.50)
+    drone.moveBackward(0.60)
     time.sleep(1)
     drone.hover()
-    time.sleep(1)
+    time.sleep(1.5)
     print "land"
     drone.land()
 

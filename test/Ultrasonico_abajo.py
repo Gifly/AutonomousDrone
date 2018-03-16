@@ -28,7 +28,7 @@ def main():
 	NDC = drone.NavDataCount
 	alti = 0.0
 	rpm = 5000.0
-	while alti < 2500:
+	while alti < 1600:
 		while drone.NavDataCount == NDC:   time.sleep(0.001)
 		if drone.getKey(): 	stop = True
 		NDC = drone.NavDataCount
