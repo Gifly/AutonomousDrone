@@ -21,31 +21,28 @@ def main():
     drone.takeoff()
     time.sleep(2)
     drone.hover()
-    time.sleep(3)
+    time.sleep(1)
     #drone.setSpeed(0.1)
     print "hovering"
     tof.start_ranging(4)
     time.sleep(0.001)
     distance = tof.get_distance()
-
     print "Distance: "
     print distance
-    while distance > 900:
+    while distance >750:
         print "Distance: "
         distance = tof.get_distance()
         print distance
-        if distance < 901:
+        if distance <  751:
             drone.moveBackward(0.5)
         else:
-            drone.moveForward(0.15)
+            drone.moveForward(0.20)
         print "next"
     tof.stop_ranging()
     #time.sleep(3)
     print "back"
     drone.moveBackward(0.50)
-    time.sleep(1)
-    drone.hover()
-    time.sleep(1)
+    time.sleep(0.5)
     print "land"
     drone.land()
 

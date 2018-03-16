@@ -52,6 +52,7 @@ def main():
     drone.hover()
     time.sleep(2)
     print "hovering"
+<<<<<<< HEAD
     k=0
     finalized=False
     while k!=27 or not(finalized) :
@@ -65,6 +66,65 @@ def main():
                     measuresPass+=1
                     print "Distance achieved", measuresPass
         finalized = (measuresPass==3)          
+=======
+    tof.start_ranging(4)
+    time.sleep(0.001)
+    #THIS PART GETS NEAR THE OBSTACLE
+    distance = tof.get_distance()
+    while distance > 900:
+        print "Distance: "
+        distance = tof.get_distance()
+        print distance
+        if distance < 901:
+            drone.moveBackward(0.5)
+        else:
+            drone.moveForward(0.15)
+        print "next"
+    #time.sleep(3)
+    print "back"
+    drone.moveBackward(0.5)
+    time.sleep(0.5)
+    drone.hover()
+    time.sleep(4)
+
+    #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
+    #WITH A TIME OUT
+    thisTime = time.time()
+    distance = tof.get_distance()
+    while distance < 8000:
+        print  "Distancia subiendo ", distance
+        drone.moveUp(0.5)
+        distance = tof.get_distance()
+        actualTime = time.time()
+        if (actualTime - thisTime) > 7 : 
+            drone.land()
+            print "TIME OUT"
+            break
+    print "FINISHED GOING UP"
+    #THIS LANDS THE DRONE AFTER THE TIME OUT OR WHEN
+    #IT DETECTS A WALL
+    thisTime = time.time()
+    distance = tof.get_distance()
+    while distance > 900:
+        print "Distance: "
+        distance = tof.get_distance()
+        print distance
+        if distance <  901:
+            drone.moveBackward(0.5)
+        else:
+            drone.moveForward(0.15)
+        actualTime = time.time()
+        if (actualTime - thisTime) > 4 : 
+            drone.land()
+            print "TIME OUT"
+            break
+ 
+    print "back"
+    drone.moveBackward(0.5)
+    time.sleep(0.5)
+    drone.hover()
+    time.sleep(1)
+>>>>>>> 952fe3e08443433b35ec4edd8953475be0b3e418
 
     print "land"
     drone.land()
