@@ -26,35 +26,62 @@ def main():
     print "hovering"
     tof.start_ranging(4)
     time.sleep(0.001)
+    #THIS PART GETS NEAR THE OBSTACLE
     distance = tof.get_distance()
-    while distance > 300:
+    while distance > 900:
         print "Distance: "
         distance = tof.get_distance()
         print distance
-        if distance <  301:
-            drone.moveBackward(0.4)
+        if distance < 901:
+            drone.moveBackward(0.5)
         else:
-            drone.moveForward(0.1)
+            drone.moveForward(0.15)
         print "next"
     #time.sleep(3)
     print "back"
-    drone.moveBackward(0.4)
+    drone.moveBackward(0.5)
     time.sleep(0.5)
     drone.hover()
-    time.sleep(1)
+    time.sleep(4)
+
+    #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
+    #WITH A TIME OUT
     thisTime = time.time()
     distance = tof.get_distance()
-    while distance < 1000:
-        
-        drone.moveUp()
+    while distance < 8000:
+        print  "Distancia subiendo ", distance
+        drone.moveUp(0.5)
         distance = tof.get_distance()
         actualTime = time.time()
-        if (actualTime - thisTime) > 3 : 
+        if (actualTime - thisTime) > 7 : 
             drone.land()
             print "TIME OUT"
             break
-    drone.moveForward()
+    print "FINISHED GOING UP"
+    #THIS LANDS THE DRONE AFTER THE TIME OUT OR WHEN
+    #IT DETECTS A WALL
+    thisTime = time.time()
+    distance = tof.get_distance()
+    while distance > 900:
+        print "Distance: "
+        distance = tof.get_distance()
+        print distance
+        if distance <  901:
+            drone.moveBackward(0.5)
+        else:
+            drone.moveForward(0.15)
+        actualTime = time.time()
+        if (actualTime - thisTime) > 4 : 
+            drone.land()
+            print "TIME OUT"
+            break
+ 
+    print "back"
+    drone.moveBackward(0.5)
+    time.sleep(0.5)
+    drone.hover()
     time.sleep(1)
+
     print "land"
     drone.land()
 
