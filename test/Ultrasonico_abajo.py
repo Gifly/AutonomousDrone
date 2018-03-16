@@ -23,25 +23,25 @@ def main():
 	drone.hover()
 	time.sleep(3)
 
+
 	stop = False
 	NDC = drone.NavDataCount
 	alti = 0.0
-	while not stop:
+	rpm = 5000.0
+	while alti < 2500:
 		while drone.NavDataCount == NDC:   time.sleep(0.001)
 		if drone.getKey(): 	stop = True
 		NDC = drone.NavDataCount
 		alti = drone.NavData["altitude"][3]
 		print "Altitude: " + str(alti)
-		if alti < 400:
-			drone.moveUp(0.05)
-		elif alti > 400:
-			drone.moveDown(0.05)
-		else:
-			drone.hover()
-			time.sleep(8)
-			stop = True
+		print "RPM: " +str(rpm)
+		drone.moveUp(1.0)
+	drone.moveDown(0.6)
+	time.sleep(1)
+	drone.hover()
+	time.sleep(1)
 	print "land"
-	drone.land()
+	drone.land(),
 
 if __name__ == "__main__":
     main()
