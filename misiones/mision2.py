@@ -42,7 +42,7 @@ def main():
     drone.moveBackward(0.5)
     time.sleep(0.5)
     drone.hover()
-    time.sleep(1)
+    time.sleep(4)
 
     #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
     #WITH A TIME OUT
@@ -50,14 +50,14 @@ def main():
     distance = tof.get_distance()
     while distance < 8000:
         print  "Distancia subiendo ", distance
-        drone.moveUp()
+        drone.moveUp(0.5)
         distance = tof.get_distance()
         actualTime = time.time()
         if (actualTime - thisTime) > 7 : 
             drone.land()
             print "TIME OUT"
             break
-
+    print "FINISHED GOING UP"
     #THIS LANDS THE DRONE AFTER THE TIME OUT OR WHEN
     #IT DETECTS A WALL
     thisTime = time.time()
