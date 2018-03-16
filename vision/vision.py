@@ -10,7 +10,7 @@ uppValInd=[]
 def setRange():
 	cwd = os.getcwd()
 	print "cwd: ",cwd
-	file = open("../vision/colorV.txt","r")
+	file = open("../vision/colorVal.txt","r")
 	i=0
 	for line in file:
 		if(i<3):
