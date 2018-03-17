@@ -16,6 +16,12 @@ def main():
     time.sleep(0.5)
     print "BATERIA ACTUAL: ", drone.getBattery()[0]
 
+    #NAV DATA
+    print "Obteniendo paquete de medidas"
+    drone.useDemoMode(False)
+    drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
+
+
     print "Comienzo el programa"
     print "takeoff"
     drone.takeoff()
@@ -46,22 +52,25 @@ def main():
 
     #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
     #WITH A TIME OUT
-    thisTime = time.time()
-    distance = tof.get_distance()
-    while distance < 5000:
-        print  "Distancia subiendo ", distance
+    stop = False
+    NDC = drone.NavDataCount
+    alti = 0.0
+
+    while alti < 1600:
+        while drone.NavDataCount == NDC:   time.sleep(0.001)
+        if drone.getKey():  stop = True
+        NDC = drone.NavDataCount
+        alti = drone.NavData["altitude"][3]
+        print "Altitude: " + str(alti)
         drone.moveUp(0.9)
-        distance = tof.get_distance()
-        actualTime = time.time()
-        if (actualTime - thisTime) > 7 : 
-            drone.land()
-            print "TIME OUT"
-            break
+
     print "FINISHED GOING UP"
     drone.moveUp(0.8)
-    time.sleep(3)
+    time.sleep(1)
     drone.hover()
     time.sleep(2)
+
+
     #THIS LANDS THE DRONE AFTER THE TIME OUT OR WHEN
     #IT DETECTS A WALL
     thisTime = time.time()
