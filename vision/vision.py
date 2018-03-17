@@ -137,64 +137,68 @@ def isRectangle(cnt):
 
 
 def validateBase(frame):
-	frame = cv2.resize(frame,(600,600))
-    frame = cv2.bilateralFilter(frame, 9, 75, 75)
-    kernel = np.ones((5, 5), np.uint8)
-    frame = cv2.erode(frame, kernel, iterations=2)
-    ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
-    cv2.imshow("Final", thresh)
+	frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	frame = cv2.resize(frame,(300,300))
+	frame = cv2.bilateralFilter(frame, 9, 75, 75)
+	kernel = np.ones((5, 5), np.uint8)
+	frame = cv2.erode(frame, kernel, iterations=2)
+	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
 
-    _, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    n = len(contours)
-    if n == 4:
-        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:n]
+	n = len(contours)
+	if n == 4:
+		contours = sorted(contours, key=cv2.contourArea, reverse=True)[:n]
 
-        M0 = cv2.moments(contours[0])
-        x0 = M0['m10'] / M0['m00']
-        y0 = M0['m01'] / M0['m00']
-        M1 = cv2.moments(contours[1])
-        x1 = M1['m10'] / M1['m00']
-        y1 = M1['m01'] / M1['m00']
-        M2 = cv2.moments(contours[2])
-        x2 = M2['m10'] / M2['m00']
-        y2 = M2['m01'] / M2['m00']
-        M3 = cv2.moments(contours[3])
-        x3 = M3['m10'] / M3['m00']
-        y3 = M3['m01'] / M3['m00']
+		M0 = cv2.moments(contours[0])
+		x0 = M0['m10'] / M0['m00']
+		y0 = M0['m01'] / M0['m00']
+		M1 = cv2.moments(contours[1])
+		x1 = M1['m10'] / M1['m00']
+		y1 = M1['m01'] / M1['m00']
+		M2 = cv2.moments(contours[2])
+		x2 = M2['m10'] / M2['m00']
+		y2 = M2['m01'] / M2['m00']
+		M3 = cv2.moments(contours[3])
+		x3 = M3['m10'] / M3['m00']
+		y3 = M3['m01'] / M3['m00']
 
-        slope1 = ((y2 - y0) / (x2 - x0))
-        slope2 = ((y3 - y1) / (x3 - x1))
+		slope1 = ((y2 - y0) / (x2 - x0))
+		slope2 = ((y3 - y1) / (x3 - x1))
 
-        if slope1*slope2 > 0:
-            return True
-    return False
+		if slope1*slope2 > 0:
+			return True
+	return False
 
-    def getBase(frame):
-    	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+def getBase(frame):
+	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-	    base = cascade.detectMultiScale(gray, 1.3, 10)
+	base = cascade.detectMultiScale(gray, 1.3, 10)
 
-	    if base is ():
-	    	return -1,-1,0
-    	else:
-	    		xc = xr = 0
-				yc = yr = 0
-				hc = hr = 0
-				wc = wr = 0
-		    for (x,y,w,h) in base:
-		    	xr = x
-		    	yr = y
-		    	wr = w
-		    	hr = h
+	if base is ():
+		return -1,-1,0
+	else:
+		xc = xr = 0
+		yc = yr = 0
+		hc = hr = 0
+		wc = wr = 0
+		for (x,y,w,h) in base:
+			xr = x
+			yr = y
+			wr = w
+			hr = h
 
-				xc = x + int((w)/3)
-				yc = y + int((h)/3)
-				hc = int(h/3)
-				wc = int(w/3)
-		    onlyBase = frame[yc:yc+hc,xc:xc+wc]
-		    if validateBase(onlyBase):
-		    	return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
-		    return -1,-1,0
+			xc = x + int((w)/3)
+			yc = y + int((h)/3)
+			hc = int(h/3)
+			wc = int(w/3)
+
+		onlyBase = frame[yc:yc+hc,xc:xc+wc]
+		return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
+		'''
+		if validateBase(onlyBase):
+			return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
+		return -1,-1,0
+		'''
 
 
