@@ -7,6 +7,8 @@ lowVal=[]
 uppVal=[]
 lowValInd=[]
 uppValInd=[]
+cascade = cv2.CascadeClassifier('../vision/cascades/LANDING.xml')
+
 def setRange():
 	cwd = os.getcwd()
 	print "cwd: ",cwd
@@ -135,9 +137,10 @@ def isRectangle(cnt):
 
 
 def validateBase(frame):
+	frame = cv2.resize(frame,(600,600))
     frame = cv2.bilateralFilter(frame, 9, 75, 75)
     kernel = np.ones((5, 5), np.uint8)
-    frame = cv2.erode(frame, kernel, iterations=1)
+    frame = cv2.erode(frame, kernel, iterations=2)
     ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
     cv2.imshow("Final", thresh)
 
@@ -166,3 +169,32 @@ def validateBase(frame):
         if slope1*slope2 > 0:
             return True
     return False
+
+    def getBase(frame):
+    	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+	    base = cascade.detectMultiScale(gray, 1.3, 10)
+
+	    if base is ():
+	    	return -1,-1,0
+    	else:
+	    		xc = xr = 0
+				yc = yr = 0
+				hc = hr = 0
+				wc = wr = 0
+		    for (x,y,w,h) in base:
+		    	xr = x
+		    	yr = y
+		    	wr = w
+		    	hr = h
+
+				xc = x + int((w)/3)
+				yc = y + int((h)/3)
+				hc = int(h/3)
+				wc = int(w/3)
+		    onlyBase = frame[yc:yc+hc,xc:xc+wc]
+		    if validateBase(onlyBase):
+		    	return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
+		    return -1,-1,0
+
+
