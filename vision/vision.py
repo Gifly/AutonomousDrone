@@ -132,3 +132,37 @@ def isRectangle(cnt):
 	if match < 0.20:
 		return True
 	return False
+
+
+def validateBase(frame):
+    frame = cv2.bilateralFilter(frame, 9, 75, 75)
+    kernel = np.ones((5, 5), np.uint8)
+    frame = cv2.erode(frame, kernel, iterations=1)
+    ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
+    cv2.imshow("Final", thresh)
+
+    _, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    n = len(contours)
+    if n == 4:
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:n]
+
+        M0 = cv2.moments(contours[0])
+        x0 = M0['m10'] / M0['m00']
+        y0 = M0['m01'] / M0['m00']
+        M1 = cv2.moments(contours[1])
+        x1 = M1['m10'] / M1['m00']
+        y1 = M1['m01'] / M1['m00']
+        M2 = cv2.moments(contours[2])
+        x2 = M2['m10'] / M2['m00']
+        y2 = M2['m01'] / M2['m00']
+        M3 = cv2.moments(contours[3])
+        x3 = M3['m10'] / M3['m00']
+        y3 = M3['m01'] / M3['m00']
+
+        slope1 = ((y2 - y0) / (x2 - x0))
+        slope2 = ((y3 - y1) / (x3 - x1))
+
+        if slope1*slope2 > 0:
+            return True
+    return False
