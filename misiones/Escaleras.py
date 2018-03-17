@@ -30,14 +30,14 @@ def main():
     drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
     time.sleep(1.0)
     #THIS PART GETS NEAR THE OBSTACLE
-    for i in range(0,1):
+    for i in range(0,2):
         distance = tof.get_distance()
         
-        while distance > 1000:
+        while distance > 900:
             print "Distance: "
             distance = tof.get_distance()
             print distance
-            if distance < 1001:
+            if distance < 901:
                 drone.moveBackward(0.5)
             else:
                 drone.moveForward(0.1)
@@ -47,22 +47,22 @@ def main():
         drone.moveBackward(0.5)
         time.sleep(0.5)
         drone.hover()
-        time.sleep(4)
+        time.sleep(2)
 
         #THIS PART GOES UP 1.2 METERS USING DRONES INTEGRATED ULTRASONIC SENSOR
         NDC = drone.NavDataCount
-        altitude = 0.0
-        while alti < 1600:
+        alti = 0.0
+        while alti < 1000:
             while drone.NavDataCount == NDC:   time.sleep(0.001)
             if drone.getKey():  stop = True
             NDC = drone.NavDataCount
             alti = drone.NavData["altitude"][3]
             print "Altitude: " + str(alti)
-            drone.moveUp(0.9)  
+            drone.moveUp(1)  
     drone.hover()
     time.sleep(2)
     drone.moveLeft(0.3)
-    time sleep(2)
+    time.sleep(2)
     drone.hover()
     time.sleep(2)
     drone.land()
