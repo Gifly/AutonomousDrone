@@ -50,7 +50,7 @@ def main():
     distance = tof.get_distance()
     while distance < 5000:
         print  "Distancia subiendo ", distance
-        drone.moveUp(0.9)
+        drone.moveUp(0.7)
         distance = tof.get_distance()
         actualTime = time.time()
         if (actualTime - thisTime) > 7 : 
