@@ -140,9 +140,11 @@ def validateBase(frame):
 	frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	frame = cv2.resize(frame,(300,300))
 	frame = cv2.bilateralFilter(frame, 9, 75, 75)
-	kernel = np.ones((5, 5), np.uint8)
-	frame = cv2.erode(frame, kernel, iterations=2)
 	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
+	kernel = np.ones((3, 3), np.uint8)
+	thresh = cv2.erode(thresh, kernel, iterations=2)
+	cv2.imshow("thresh", thresh)
+	cv2.waitKey()
 
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -169,6 +171,20 @@ def validateBase(frame):
 		if slope1*slope2 > 0:
 			return True
 	return False
+
+def validateBase2(frame):
+	frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
+	kernel = np.ones((3, 3), np.uint8)
+	thresh = cv2.erode(thresh, kernel, iterations=2)
+	cv2.imshow("thresh", thresh)
+	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+	if len(contours) >= 2:
+		return True
+
+	return False 
+
 
 def getBase(frame):
 	debug = True
@@ -200,12 +216,10 @@ def getBase(frame):
 		onlyBase = frame[yc:yc+hc,xc:xc+wc]
 		if debug:
 			cv2.imshow("Cam", frame)
-		return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
+		# return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
 		
-		'''
-		if validateBase(onlyBase):
+		if validateBase2(onlyBase):
 			return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
 		return -1,-1,0
-		'''
-
+		
 

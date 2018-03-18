@@ -22,7 +22,7 @@ drone.trim()
 drone.getSelfRotation(5) 
 drone.reset()                                      # Sets drone's status to good
 while (drone.getBattery()[0]==-1): time.sleep(0.1) # Wait until drone has done its reset
-drone.useDemoMode(True)                    # Set 15 basic dataset/sec
+drone.useDemoMode(False)                    # Set 15 basic dataset/sec
 drone.setConfigAllID()
 
 print "Booting up the camera"
