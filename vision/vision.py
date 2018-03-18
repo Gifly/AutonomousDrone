@@ -7,7 +7,7 @@ lowVal=[]
 uppVal=[]
 lowValInd=[]
 uppValInd=[]
-cascade = cv2.CascadeClassifier('../vision/cascades/LANDING.xml')
+cascade = cv2.CascadeClassifier('../vision/cascades/LANDING2.xml')
 
 def setRange():
 	cwd = os.getcwd()
