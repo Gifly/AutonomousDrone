@@ -2,18 +2,21 @@ import VL53L0X
 import sys
 sys.path.insert(0,"../")
 import api.ps_drone as ps_drone
+from tools import emergency
 import time
 
 def main():
 
     drone = ps_drone.Drone()  # Start using drone
     tof = VL53L0X.VL53L0X()
+    thread = emergency.keyThread(drone)
     print "Configuracion del drone"
     drone.startup()  # Connects to drone and starts subprocesses
     drone.reset()  # Always good, at start
     drone.trim()                                       # Recalibrate sensors
     #drone.getSelfRotation(5)
     time.sleep(0.5)
+    thread.start()
     print "BATERIA ACTUAL: ", drone.getBattery()[0]
 
     print "Comienzo el programa"

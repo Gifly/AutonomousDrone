@@ -2,12 +2,14 @@ import VL53L0X
 import sys
 sys.path.insert(0,"../")
 import api.ps_drone as ps_drone
+from tools import emergency
 import time
 
 def main():
 
     drone = ps_drone.Drone()  # Start using drone
     tof = VL53L0X.VL53L0X()
+    thread = emergency.keyThread(drone)
     tof.start_ranging(4)
     time.sleep(0.001)
     if(tof.get_distance()==-1):
@@ -19,6 +21,7 @@ def main():
     drone.trim()                                       # Recalibrate sensors
     #drone.getSelfRotation(5)
     time.sleep(0.5)
+    thread.start()
     print "BATERIA ACTUAL: ", drone.getBattery()[0]
 
     #NAV DATA
@@ -62,7 +65,6 @@ def main():
 
     while alti < 1400:
         while drone.NavDataCount == NDC:   time.sleep(0.001)
-        if drone.getKey():  stop = True
         NDC = drone.NavDataCount
         alti = drone.NavData["altitude"][3]
         print "Altitude: " + str(alti)

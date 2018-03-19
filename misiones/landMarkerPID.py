@@ -6,6 +6,7 @@ sys.path.insert(0, '../')
 from PID import PIDrone
 from vision import vision
 import api.ps_drone as ps_drone
+from tools import emergency
 
 def getFrameGround():
 	IMC = drone.VideoImageCount
@@ -16,6 +17,7 @@ def getFrameGround():
 
 print "Booting up the drone"
 drone = ps_drone.Drone()                           # Start using drone	
+thread = emergency.keyThread(drone)
 drone.startup()                                    # Connects to drone and starts subprocesses
 drone.trim()                                     
 drone.getSelfRotation(5) 
@@ -24,6 +26,7 @@ while (drone.getBattery()[0]==-1): time.sleep(0.1) # Wait until drone has done i
 drone.useDemoMode(False)                    # Set 15 basic dataset/sec
 drone.setConfigAllID()
 drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
+thread.start()
 print "BATERIA ACTUAL: ", drone.getBattery()[0]
 
 print "Booting up the camera"
