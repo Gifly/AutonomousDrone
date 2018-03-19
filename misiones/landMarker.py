@@ -42,7 +42,7 @@ time.sleep(2)
 drone.hover()
 time.sleep(2)
 
-
+#THE DRONE GET A DECENT ALTITUDE TO DETECT THE MARKER
 NDC = drone.NavDataCount
 alti = 0.0
 target = 1800
@@ -58,10 +58,11 @@ while alti < target:
 drone.moveDown(0.5)
 time.sleep(0.5)
 
+#THE DRONE LOOKS FOR THE MARKER DOING ZIGZAG 
 exit = False
+x = y = -1
+area = 0
 for i in range(0,4):
-	#LEFT FORWARD
-	# drone.move(-0.1,0.03,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 	if exit:
 		break
 
@@ -69,30 +70,61 @@ for i in range(0,4):
 	now = time.time()
 	while (now - past) < 4:
 		if (i % 2) == 0:
-			drone.move(-0.08,0.03,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(-0.07,0.02,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		else:
-			drone.move(0.08,0.03,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(0.07,0.02,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		img = getFrameGround()
 		cv2.imshow("ground",img)
 		x,y,area = vision.getBase(img)
 		print x,y
 		if area > 0:
 			cv2.imwrite("/home/alex/Pictures/" + str(area) + ".jpg",img)
-		if x > -1 and y > -1:
+		if x > -1 and y > -1 and area > 25000:
 			print "FOUND!!"
 			exit = True
 			break
 		now = time.time()
 
-
 drone.hover()
 time.sleep(2)
 
+#THIS PART OF THE CODE ALLIGNS TO THE MARKER ONCE FOUND
+
 while 1:
+	drone.hover()
+	cenX = 320
+	cenY = 180
+	tolerance = 100
+
 	img = getFrameGround()
 	cv2.imshow("ground",img)
-	print vision.getBase(img)
 	k = cv2.waitKey(20)
+	xL,yL,areaL = vision.getBase(img)
+	print xL,yL,areaL
+
+	if xL < 0 and yL < 0: #If it detects nothing moves to the last place it was detected
+		if x < cenX:
+			drone.moveLeft(0.1)
+			time.sleep(0.5)
+		elif x >= cenX:
+			drone.moveRight(0.1)
+			time.sleep(0.5)
+		# drone.moveDown(0.2)
+		# time.sleep(0.5)
+
+	if xL < (cenX - tolerance): #If its left move left
+		print "ALLIGN LEFT"
+		x = xL
+		drone.moveLeft(0.05)
+		time.sleep(0.5)
+	elif xL > (cenX + tolerance): #If its right move rigth
+		print "ALLIGN LEFT"
+		x = xL
+		drone.moveRight(0.05)
+		time.sleep(0.5)
+	else: #It is centered
+		k = 1048586
+
 	if k == 1048586:
 		break
 

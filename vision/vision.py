@@ -144,7 +144,7 @@ def validateBase(frame):
 	kernel = np.ones((3, 3), np.uint8)
 	thresh = cv2.erode(thresh, kernel, iterations=2)
 	cv2.imshow("thresh", thresh)
-	cv2.waitKey()
+	# cv2.waitKey()
 
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -179,18 +179,31 @@ def validateBase2(frame):
 	thresh = cv2.erode(thresh, kernel, iterations=2)
 	cv2.imshow("thresh", thresh)
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
 	if len(contours) >= 2:
-		return True
+
+		M0 = cv2.moments(contours[0])
+		M1 = cv2.moments(contours[1])
+		if M0['m00'] > 0 and M1['m00'] > 0:
+			x0 = M0['m10'] / M0['m00']
+			y0 = M0['m01'] / M0['m00']
+			# print "PUNTO CONTOUR1: ",thresh[y0][x0]
+			x1 = M1['m10'] / M1['m00']
+			y1 = M1['m01'] / M1['m00']
+			# print "PUNTO CONTOUR2: ",thresh[y1][x1]
+
+			if thresh[y0][x0] == 255 and thresh[y1][x1] == 255:
+				return True
 
 	return False 
 
 
 def getBase(frame):
-	debug = True
+	debug = False
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-	base = cascade.detectMultiScale(gray, 1.3, 10)
+	base = cascade.detectMultiScale(gray, 1.1, 10)
 
 	if base is ():
 		return -1,-1,0
