@@ -7,6 +7,8 @@ lowVal=[]
 uppVal=[]
 lowValInd=[]
 uppValInd=[]
+lowValVen=[]
+uppValVen=[]
 def setRange():
 	cwd = os.getcwd()
 	print "cwd: ",cwd
@@ -19,8 +21,12 @@ def setRange():
 			uppVal.append(int(line))
 		elif(i<9):
 			lowValInd.append(int(line))
-		else:
+		elif(i<12):
 			uppValInd.append(int(line))
+		elif(i<15):
+			lowValVen.append(int(line))
+		elif(i<18):
+			uppValVen.append(int(line))
 		i+=1
 	file.close()
 def getCenter(frame):
@@ -89,6 +95,7 @@ def isCircle(cnt):
 	template = cv2.imread('../vision/images/circle.jpg',0)
 	ret, thresh = cv2.threshold(template, 127, 255, 0)
 
+
 	contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
@@ -97,16 +104,18 @@ def isCircle(cnt):
 		return True
 	return False
 
-def getPared(frame,lowT):
+def getVentana(frame):
 	Rectan=[]
 	area=0
 	kernel = np.ones((5,5),np.uint8)
+	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	frameCl = cv2.morphologyEx(frame,cv2.MORPH_OPEN,kernel)
-	frameCl = cv2.bilateralFilter(frameCl,9,75,75)
-	kanye = cv2.Canny(frameCl,lowT, 3*lowT)
-	cv2.imshow("Canny",kanye)
-	contours , hierarchy = cv2.findContours(kanye, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	frameCl = cv2.morphologyEx(hsv,cv2.MORPH_OPEN,kernel)
+	kanye = cv2.bilateralFilter(frameCl,9,75,75)
+	lowerInd = np.array ([lowValVen[0],lowValVen[1],lowValVen[2]])
+	upperInd = np.array([uppValVen[0],uppValVen[1],uppValVen[2]])
+	maskInd = cv2.inRange(kanye,lowerInd,upperInd)
+	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	#print n
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
@@ -129,6 +138,6 @@ def isRectangle(cnt):
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
 
-	if match < 0.20:
+	if match < 0.30:
 		return True
 	return False
