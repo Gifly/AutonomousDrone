@@ -109,9 +109,16 @@ while 1:
 		elif x >= cenX:
 			drone.moveRight(0.1)
 			time.sleep(0.5)
-		# drone.moveDown(0.2)
-		# time.sleep(0.5)
 
+		if y < cenY:
+			drone.moveForward(0.1)
+			time.sleep(0.5)
+		elif y >= cenY:
+			drone.moveBack(0.1)
+			time.sleep(0.5)
+		drone.moveDown(0.2)
+		time.sleep(0.5)
+	#ALIGN X
 	if xL < (cenX - tolerance): #If its left move left
 		print "ALLIGN LEFT"
 		x = xL
@@ -122,6 +129,19 @@ while 1:
 		x = xL
 		drone.moveRight(0.05)
 		time.sleep(0.5)
+
+	#ALIGN Y
+	if yL < (cenY - tolerance): #If its in front move forward
+		print "ALLIGN FORWARD"
+		y = yL
+		drone.moveForward(0.05)
+		time.sleep(0.5)
+	elif yL > (cenY + tolerance): #If its back move back
+		print "ALLIGN BACK"
+		y = yL
+		drone.moveBack(0.05)
+		time.sleep(0.5)
+
 	else: #It is centered
 		k = 1048586
 
