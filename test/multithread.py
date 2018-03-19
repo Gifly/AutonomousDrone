@@ -5,26 +5,28 @@ import threading
 import api.ps_drone as ps_drone
 import time
 
-class keyThread(threading, Thread):
-
-	def __init__(self):
+class keyThread(threading.Thread):
+	def __init__(self, drone):
 		threading.Thread.__init__(self)
-	def run(self, drone):
-		exit = false
-		while(not exit):
-			if drone.getkey: exit = true
+		self.drone = drone
+		self.exit = False
+	def run(self):
+		while(not self.exit):
+			if self.drone.getKey(): self.exit = True
 		print "landing"
-		dron.land
+		self.drone.land()
+		print "disconecting"
+		self.drone.shutdown()
 
 drone = ps_drone.Drone()  # Start using drone
-thread = keyThread()
+thread = keyThread(drone)
 
 drone.startup()  # Connects to drone and starts subprocesses
 drone.reset()  # Always good, at start
 drone.trim()
 drone.getSelfRotation(5)
 time.sleep(0.5)
-thread.run(drone)
+thread.start()
 print "Bateria: ", drone.getBattery()[0]
 print "takeoff"
 drone.takeoff()
