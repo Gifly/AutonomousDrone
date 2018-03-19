@@ -33,7 +33,7 @@ def isRectangle(cnt):
 
     match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
 
-    if match < 0.30:
+    if match < 0.50:
         return True
     return False
 
@@ -131,13 +131,13 @@ HIUP = cv2.setTrackbarPos('HIUP', 'HSV',uppValInd[0])
 SIUP = cv2.setTrackbarPos('SIUP', 'HSV',uppValInd[1])
 VIUP = cv2.setTrackbarPos('VIUP', 'HSV',uppValInd[2])
 
-HVL = cv2.createTrackbar('HVL', 'WINDOWS', 0, 255, lowValVen[0])
-SVL = cv2.createTrackbar('SVL', 'WINDOWS', 0, 255, lowValVen[1])
-VVL = cv2.createTrackbar('VVL', 'WINDOWS', 0, 255, lowValVen[2])
+HVL = cv2.setTrackbarPos('HVL', 'WINDOWS', lowValVen[0])
+SVL = cv2.setTrackbarPos('SVL', 'WINDOWS', lowValVen[1])
+VVL = cv2.setTrackbarPos('VVL', 'WINDOWS', lowValVen[2])
 
-HVU = cv2.createTrackbar('HVU', 'WINDOWS', 255, 255, uppValVen[0])
-SVU = cv2.createTrackbar('SVU', 'WINDOWS', 255, 255, uppValVen[1])
-VVU = cv2.createTrackbar('VVU', 'WINDOWS', 255, 255, uppValVen[2])
+HVU = cv2.setTrackbarPos('HVU', 'WINDOWS', uppValVen[0])
+SVU = cv2.setTrackbarPos('SVU', 'WINDOWS', uppValVen[1])
+VVU = cv2.setTrackbarPos('VVU', 'WINDOWS', uppValVen[2])
 
 save = cv2.setTrackbarPos('SAVE', 'HSV',0)
 k = 0
@@ -186,13 +186,13 @@ while k != 27:
     mask = cv2.inRange(hsv, lower, upper)
     maskInd = cv2.inRange(hsv,lowerInd,upperInd)
     maskInd = cv2.morphologyEx(maskInd,cv2.MORPH_OPEN,kernel)
-    maskVen = cv2.inRange(hsv,lowerInd,upperInd)
+    maskVen = cv2.inRange(hsv,lowerWindow,upperWindow)
     # Bitwise-AND mask and original image
     res = cv2.bitwise_and(frame, frame, mask=mask)
-    res = cv2.bitwise_and(res, res, mask=maskVen)
+    resV = cv2.bitwise_and(frame, frame, mask=maskVen)
     #Get contoursq
     contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    contoursV , hierarchyV = cv2.findContours(maskVen, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contoursV , hierarchyV = cv2.findContours(maskVen, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     #Indicators
     n = len(contours)
     contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
@@ -202,19 +202,17 @@ while k != 27:
             if(isCircle(contours[i])):
                 Puntos.append(contours[i])
         
-    if(Puntos):
-        cv2.drawContours(res,Puntos,-1,(0,255,0),2)
-
     #Ventanas
     n = len(contoursV)
     contoursV = sorted(contoursV,key=cv2.contourArea, reverse=True)[:n]
     print len(contoursV)
-    if(len(contoursV)>=1):
-        if(isRectangle(contours[0])):
-            Ventanas.append(contours[0])
+    if(len(contoursV)>=5):
+        for i in range (0,5):
+            if(isRectangle(contoursV[i])):
+                Ventanas.append(contoursV[i])
         
     if(Ventanas):
-        cv2.drawContours(res,Ventanas,-1,(0,100,100),2)
+        cv2.drawContours(resV,Ventanas,-1,(255,0,0),2)
 
     if(saveStatus==1):
         font = cv2.FONT_ITALIC
@@ -239,15 +237,16 @@ while k != 27:
         file.write(str(lowValVen[1]) + "\n")
         file.write(str(lowValVen[2]) + "\n")
         
-        file.write(str(lowValVen[0]) + "\n")
-        file.write(str(lowValVen[1]) + "\n")
-        file.write(str(lowValVen[2]) + "\n")
+        file.write(str(uppValVen[0]) + "\n")
+        file.write(str(uppValVen[1]) + "\n")
+        file.write(str(uppValVen[2]) + "\n")
 
 
         cv2.putText(res,'Valor Guardado',(50,50),font,1,(255,255,255),2)
         file.close()
     
     cv2.imshow('res',res)
+    cv2.imshow('resV',resV)
     cv2.imshow('original', frame)
     k = cv2.waitKey(5)%256
 

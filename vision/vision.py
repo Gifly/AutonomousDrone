@@ -138,6 +138,6 @@ def isRectangle(cnt):
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
 
-	if match < 0.30:
+	if match < 0.20:
 		return True
 	return False
