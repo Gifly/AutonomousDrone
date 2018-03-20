@@ -1,5 +1,3 @@
-
-
 import cv2
 import numpy as np
 import sys
@@ -7,7 +5,7 @@ import time
 sys.path.insert(0, '../')
 from vision import vision
 import api.ps_drone as ps_drone
-from tools import emergency
+# from tools import emergency
 
 def getFrameGround():
 	IMC = drone.VideoImageCount
@@ -18,7 +16,7 @@ def getFrameGround():
 
 print "Booting up the drone"
 drone = ps_drone.Drone()                           # Start using drone	
-thread = emergency.keyThread(drone)
+# thread = emergency.keyThread(drone)
 drone.startup()                                    # Connects to drone and starts subprocesses
 drone.trim()                                     
 drone.getSelfRotation(5) 
@@ -27,7 +25,6 @@ while (drone.getBattery()[0]==-1): time.sleep(0.1) # Wait until drone has done i
 drone.useDemoMode(False)                    # Set 15 basic dataset/sec
 drone.setConfigAllID()
 drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
-thread.start()
 print "BATERIA ACTUAL: ", drone.getBattery()[0]
 
 print "Booting up the camera"
@@ -39,6 +36,7 @@ drone.startVideo()                                  # Start video-function
 
 #NAVIGATE THE ARENA
 drone.showVideo()
+# thread.start()
 
 drone.takeoff()
 time.sleep(2)
@@ -48,7 +46,7 @@ time.sleep(2)
 #THE DRONE GET A DECENT ALTITUDE TO DETECT THE MARKER
 NDC = drone.NavDataCount
 alti = 0.0
-target = 1800
+target = 1600
 while alti < target:
 	while drone.NavDataCount == NDC:   time.sleep(0.001)
 	NDC = drone.NavDataCount
@@ -61,11 +59,14 @@ while alti < target:
 drone.moveDown(0.5)
 time.sleep(0.5)
 
-#THE DRONE LOOKS FOR THE MARKER DOING ZIGZAG 
+#THE DRONE LOOKS FOR THE MARKER DOING ZIGZAG
+cenX = 320
+cenY = 180
+tolerance = 100 
 exit = False
 x = y = -1
 area = 0
-for i in range(0,4):
+for i in range(0,6):
 	if exit:
 		break
 
@@ -73,17 +74,23 @@ for i in range(0,4):
 	now = time.time()
 	while (now - past) < 4:
 		if (i % 2) == 0:
-			drone.move(-0.07,0.02,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(-0.09,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		else:
-			drone.move(0.07,0.02,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(0.09,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		img = getFrameGround()
 		cv2.imshow("ground",img)
 		x,y,area = vision.getBase(img)
 		print x,y
 		if area > 0:
 			cv2.imwrite("/home/alex/Pictures/" + str(area) + ".jpg",img)
-		if x > -1 and y > -1 and area > 25000:
+		if x > -1 and y > -1 and area > 2000:
 			print "FOUND!!"
+			if x < cenX:
+				drone.moveRight(0.3)
+			else:
+				drone.moveLeft(0.3)
+			time.sleep(1)
+			drone.hover()
 			exit = True
 			break
 		now = time.time()
@@ -93,11 +100,9 @@ time.sleep(2)
 
 #THIS PART OF THE CODE ALLIGNS TO THE MARKER ONCE FOUND
 
-while 1:
+while exit:
 	drone.hover()
-	cenX = 320
-	cenY = 180
-	tolerance = 100
+	
 
 	img = getFrameGround()
 	cv2.imshow("ground",img)
