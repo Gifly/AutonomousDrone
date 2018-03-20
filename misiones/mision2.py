@@ -70,6 +70,19 @@ def main():
         print "Altitude: " + str(alti)
         drone.move(0,0.05,0.99,0.0)
 
+    #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
+    #WITH A TIME OUT
+    thisTime = time.time()
+    distance = tof.get_distance()
+    while distance < 5000:
+        print  "Distancia subiendo ", distance
+        drone.moveUp(0.7)
+        distance = tof.get_distance()
+        actualTime = time.time()
+        if (actualTime - thisTime) > 7 : 
+            drone.land()
+            print "TIME OUT"
+            break
     print "FINISHED GOING UP"
 
     drone.moveDown(0.2)
