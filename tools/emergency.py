@@ -1,3 +1,4 @@
+import time
 import sys
 sys.path.insert(0,"../")
 
@@ -12,7 +13,10 @@ class keyThread(threading.Thread):
 	def run(self):
 		while(not self.exit):
 			if self.drone.getKey(): self.exit = True
+			time.sleep(0.1)
+
 		print "landing"
 		self.drone.land()
 		print "disconecting"
 		self.drone.shutdown()
+		self.terminate()
