@@ -64,7 +64,7 @@ def getIndicators(frame):
 	upperInd = np.array([uppValInd[0],uppValInd[1],uppValInd[2]])
 	maskInd = cv2.inRange(hsv,lowerInd,upperInd)
 	maskInd = cv2.morphologyEx(maskInd,cv2.MORPH_OPEN,kernel)
-	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours, _ = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
 	if(len(contours)>=2):
@@ -109,6 +109,8 @@ def isCircle(cnt):
 def getVentana(frame):
 	Rectan=[]
 	area=0
+	x= 0
+	y = 0
 	kernel = np.ones((5,5),np.uint8)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -118,29 +120,43 @@ def getVentana(frame):
 	lowerInd = np.array ([lowValVen[0],lowValVen[1],lowValVen[2]])
 	upperInd = np.array([uppValVen[0],uppValVen[1],uppValVen[2]])
 	maskInd = cv2.inRange(kanye,lowerInd,upperInd)
-	cv2.imshow("La Mascara 2", maskInd)
-	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
+	maskInver = cv2.bitwise_not(maskInd)
+	cv2.imshow("La Mascara 2", maskInver)
+	contours, _ = cv2.findContours(maskInver, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
 	n = len(contours)
 	#print n
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
-	if(len(contours)>=1):
-		biggestC = contours[0]
+	tamContours = len(contours)
+	if(tamContours>=1):
+		M = cv2.moments(contours[0])
+		area = M['m00']
+		if(tamContours>=2):
+			if(area<200000):
+				biggestC = contours[0]	
+			else:
+				biggestC = contours[1]
+		else:
+			biggestC =contours[0]
 		accuracy = 0.02 * cv2.arcLength(biggestC,True)
 		approx = cv2.approxPolyDP(biggestC,accuracy,True)
 		cv2.drawContours(frame,[approx],-1,(255,0,0),4)
-		if(isRectangle(contours[0])):
+		if(isRectangle(biggestC)):
 			print "Encontre un rectangulo"
-			cv2.drawContours(frame,contours[0],-1,(0,255,0),4)
-    		M = cv2.moments(contours[0])
+			cv2.drawContours(frame,biggestC,-1,(0,255,0),4)
+    		M = cv2.moments(biggestC)
     		area = M['m00']
-	return area,frame
+    		if(area>5000):
+    			x = int(M['m10'] / M['m00'])
+    			y = int(M['m01'] / M['m00'])
+    			cv2.circle(frame,(x,y),5,(66,244,66), -1)
+	return x, y, area,frame
 	#Gets X and Y axis of both points
 
 def isRectangle(cnt):
 	template = cv2.imread('../vision/images/rectangle.png',0)
 	ret, thresh = cv2.threshold(template, 127, 255, 0)
 
-	contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+	contours,  hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
 
@@ -248,4 +264,3 @@ def getBase(frame):
 			return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
 		return -1,-1,0
 		
-

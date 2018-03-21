@@ -12,13 +12,14 @@ def getImage():
     pImg = cv2.resize(img,(640, 360), interpolation = cv2.INTER_CUBIC)               
     return pImg      # Returns image
 
-print "Booting up the drone for color calibration"
+print "Booting up the drone for frames testing"
 drone = ps_drone.Drone()                                                    
 drone.startup()
 drone.reset()
 drone.trim()                                     
 drone.getSelfRotation(5) 
 drone.setConfigAllID()
+cap = cv2.VideoCapture(0)
 #Drone's camera initial configuration
 print "Booting up the camera"
 drone.frontCam()
@@ -29,9 +30,11 @@ while CDC == drone.ConfigDataCount: time.sleep(0.0001)  # Wait until it is done 
 drone.startVideo()
 vision.setRange()
 k=0
+x = y = 0
 while k != 27:
 	frame =  getImage()
-	area, frame = vision.getVentana(frame)
+	x , y, area, frame = vision.getVentana(frame)
+	print "Area: ", area , "Centro: ", x , y
 	cv2.imshow("Ventana mas grande", frame)
 	k =cv2.waitKey(5)%256
 cv2.destroyAllWindows()
