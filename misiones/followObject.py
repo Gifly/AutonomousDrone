@@ -6,6 +6,7 @@ import time
 from vision import vision
 import cv2
 from PID import PIDrone
+from tools import emergency
 #importar libreria de Christian aqui
 
 def getImage():
@@ -20,12 +21,14 @@ SpeedZ = 0.0
 SpeedX=0.0
 SpeedY=0.0
 print "Booting up the drone"
-drone = ps_drone.Drone()													
+drone = ps_drone.Drone()
+thread = emergency.keyThread(drone)													
 drone.startup()
 drone.reset()
 drone.trim()                                     
 drone.getSelfRotation(5) 
-drone.setConfigAllID()
+time.sleep(0.5)
+thread.start()
 
 #Drone's camera initial configuration
 print "Booting up the camera"

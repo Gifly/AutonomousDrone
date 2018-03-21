@@ -2,12 +2,14 @@ import VL53L0X
 import sys
 sys.path.insert(0,"../")
 import api.ps_drone as ps_drone
+from tools import emergency
 import time
 
 def main():
 
     drone = ps_drone.Drone()  # Start using drone
     tof = VL53L0X.VL53L0X()
+    thread = emergency.keyThread(drone)
     tof.start_ranging(4)
     time.sleep(0.001)
     if(tof.get_distance()==-1):
@@ -19,6 +21,7 @@ def main():
     drone.trim()                                       # Recalibrate sensors
     #drone.getSelfRotation(5)
     time.sleep(0.5)
+    thread.start()
     print "BATERIA ACTUAL: ", drone.getBattery()[0]
 
     #NAV DATA
@@ -56,19 +59,29 @@ def main():
     time.sleep(5)
 
     #THIS PART GOES UP 1600 mm
-    stop = False
     NDC = drone.NavDataCount
     alti = 0.0
-
     while alti < 1400:
         while drone.NavDataCount == NDC:   time.sleep(0.001)
-        if drone.getKey():  stop = True
         NDC = drone.NavDataCount
         alti = drone.NavData["altitude"][3]
         print "Altitude: " + str(alti)
         drone.move(0,0.05,0.99,0.0)
 
-    print "FINISHED GOING UP"
+    # #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
+    # #WITH A TIME OUT
+    # thisTime = time.time()
+    # distance = tof.get_distance()
+    # while distance < 5000:
+    #     print  "Distancia subiendo ", distance
+    #     drone.moveUp(0.7)
+    #     distance = tof.get_distance()
+    #     actualTime = time.time()
+    #     if (actualTime - thisTime) > 7 : 
+    #         drone.land()
+    #         print "TIME OUT"
+    #         break
+    # print "FINISHED GOING UP"
 
     drone.moveDown(0.2)
     time.sleep(0.5)
