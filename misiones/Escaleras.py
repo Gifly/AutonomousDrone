@@ -68,7 +68,7 @@ def main():
     drone.hover()
     time.sleep(2)
     drone.moveLeft(0.3)
-    time.sleep(1.5)
+    time.sleep(2)
     drone.hover()
     time.sleep(2)
     drone.land()

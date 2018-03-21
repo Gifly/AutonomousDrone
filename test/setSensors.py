@@ -25,6 +25,7 @@ for i in drone.ConfigData:
 	if i[0]== "control:euler_angle_max" or i[0]== "control:control_vz_max" or i[0]== "control:control_yaw":
 		print str(i)
 print "Bateria: ", drone.getBattery()[0]
+
 print "takeoff"
 drone.takeoff()
 time.sleep(2)

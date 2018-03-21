@@ -47,7 +47,7 @@ time.sleep(2)
 #THE DRONE GET A DECENT ALTITUDE TO DETECT THE MARKER
 NDC = drone.NavDataCount
 alti = 0.0
-target = 2000
+target = 3100
 while alti < target:
 	while drone.NavDataCount == NDC:   time.sleep(0.001)
 	NDC = drone.NavDataCount
@@ -64,35 +64,37 @@ time.sleep(0.5)
 exit = False
 x = y = -1
 area = 0
-for i in range(0,4):
+for i in range(0,6):
 	if exit:
 		break
 
 	past = time.time()
 	now = time.time()
-	while (now - past) < 4:
+	while (now - past) < 5:
 		if (i % 2) == 0:
-			drone.move(-0.07,0.02,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(-0.07,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		else:
-			drone.move(0.07,0.02,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(0.1,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		img = getFrameGround()
 		cv2.imshow("ground",img)
 		x,y,area = vision.getBase(img)
 		print x,y
 		if area > 0:
-			cv2.imwrite("/home/paul/Pictures/" + str(area) + ".jpg",img)
-		if x > -1 and y > -1 and area > 25000:
+			cv2.imwrite("/home/alex/Pictures/" + str(area) + ".jpg",img)
+		if x > -1 and y > -1 and area > 2000:
 			print "FOUND!!"
 			exit = True
 			break
 		now = time.time()
+	drone.hover()
+	time.sleep(2)
 
 drone.hover()
 time.sleep(2)
 
 #INITIALIZE PID HERE
 print "Inicializo el PID"
-PIDx = PIDrone.DronePID(0.090, 0.02, 0)
+PIDx = PIDrone.DronePID(0.080, 0.02, 0)
 PIDy = PIDrone.DronePID(0.081, 0.02, 0)
 SpeedX = 0.0
 SpeedY = 0.0
