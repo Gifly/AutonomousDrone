@@ -111,20 +111,24 @@ def getVentana(frame):
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	frameCl = cv2.morphologyEx(hsv,cv2.MORPH_OPEN,kernel)
+	frameCl = cv2.dilate(frameCl,kernel,iterations=1)
 	kanye = cv2.bilateralFilter(frameCl,9,75,75)
 	lowerInd = np.array ([lowValVen[0],lowValVen[1],lowValVen[2]])
 	upperInd = np.array([uppValVen[0],uppValVen[1],uppValVen[2]])
 	maskInd = cv2.inRange(kanye,lowerInd,upperInd)
-	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	cv2.imshow("La Mascara 2", maskInd)
+	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
 	n = len(contours)
 	#print n
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
-	cv2.drawContours(frame,contours,-1,(0,50,0),1)
 	if(len(contours)>=1):
-		cv2.drawContours(frame,contours[0],-1,(255,0,0),2)
+		biggestC = contours[0]
+		accuracy = 0.02 * cv2.arcLength(biggestC,True)
+		approx = cv2.approxPolyDP(biggestC,accuracy,True)
+		cv2.drawContours(frame,[approx],-1,(255,0,0),4)
 		if(isRectangle(contours[0])):
-			#print "Encontre un rectangulo"
-			cv2.drawContours(frame,contours[0],-1,(0,0,255),2)
+			print "Encontre un rectangulo"
+			cv2.drawContours(frame,contours[0],-1,(0,255,0),4)
     		M = cv2.moments(contours[0])
     		area = M['m00']
 	return area,frame
@@ -138,6 +142,6 @@ def isRectangle(cnt):
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
 
-	if match < 0.20:
+	if match < 0.45:
 		return True
 	return False

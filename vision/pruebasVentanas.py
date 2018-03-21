@@ -27,7 +27,8 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount: time.sleep(0.0001)  # Wait until it is done (after resync is done)
 drone.startVideo()
-
+vision.setRange()
+k=0
 while k != 27:
 	frame =  getImage()
 	area, frame = vision.getVentana(frame)
