@@ -18,7 +18,7 @@ for i in drone.ConfigData:
 	if i[0]== "control:euler_angle_max" or i[0]== "control:control_vz_max" or i[0]== "control:control_yaw":
 		print str(i)
 drone.setConfig("control:euler_angle_max","0.208")
-drone.setConfig("control:control_vz_max","1000")
+drone.setConfig("control:control_vz_max","1111")
 drone.setConfig("control:control_yaw","1.75")
 while CDC == drone.ConfigDataCount: time.sleep(0.15)
 for i in drone.ConfigData:

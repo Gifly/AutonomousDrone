@@ -32,7 +32,7 @@ def main():
     drone.useDemoMode(False)
     drone.getNDpackage(["demo","pressure_raw","altitude","magneto","wifi"])
     time.sleep(1.0)
-
+    '''
     #THIS PART GETS NEAR THE OBSTACLE
     distance = tof.get_distance()
     print "Distance before while: ",distance
@@ -51,12 +51,12 @@ def main():
     print "hover"
     drone.hover()
     time.sleep(3)
-
+    '''
     for i in range(0,2):
-        #THIS PART GOES UP 1600 mm
+        #THIS PART GOES UP 
         NDC = drone.NavDataCount
         alti = 0.0
-        while alti < 1100:
+        while alti < 1000:
             while drone.NavDataCount == NDC:   time.sleep(0.001)
             NDC = drone.NavDataCount
             alti = drone.NavData["altitude"][3]
