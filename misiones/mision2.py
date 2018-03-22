@@ -58,7 +58,22 @@ def main():
     drone.hover()
     time.sleep(5)
 
-    #THIS PART GOES UP 1600 mm
+    distance = tof.get_distance()
+    while distance<2500 and distance !=0:
+        distance = tof.get_distance()
+        print "Distance", distance
+        if distance>2501:
+            drone.stop()
+        else:
+            drone.moveLeft(0.1)
+    print "Clear" 
+    drone.stop()
+    drone.moveRight(0.3)
+    time.sleep(0.3)
+    print "Stopped"
+    '''
+    #THIS PART GOES to the right until nothing is in front 
+
     NDC = drone.NavDataCount
     alti = 0.0
     while alti < 1400:
@@ -67,7 +82,7 @@ def main():
         alti = drone.NavData["altitude"][3]
         print "Altitude: " + str(alti)
         drone.move(0,0.05,0.99,0.0)
-
+    '''
     # #THIS PART GOES UP WHILE SEEIONG THE OBSTACLE AND GOES FORWARD
     # #WITH A TIME OUT
     # thisTime = time.time()
@@ -82,9 +97,10 @@ def main():
     #         print "TIME OUT"
     #         break
     # print "FINISHED GOING UP"
-
+    '''
     drone.moveDown(0.2)
     time.sleep(0.5)
+    '''
     drone.hover()
     time.sleep(2)	
 
