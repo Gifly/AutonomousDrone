@@ -5,7 +5,7 @@ import time
 sys.path.insert(0, '../')
 from vision import vision
 import api.ps_drone as ps_drone
-# from tools import emergency
+from tools import emergency
 
 def getFrameGround():
 	IMC = drone.VideoImageCount
@@ -16,7 +16,7 @@ def getFrameGround():
 
 print "Booting up the drone"
 drone = ps_drone.Drone()                           # Start using drone	
-# thread = emergency.keyThread(drone)
+thread = emergency.keyThread(drone)
 drone.startup()                                    # Connects to drone and starts subprocesses
 drone.trim()                                     
 drone.getSelfRotation(5) 
@@ -36,7 +36,7 @@ drone.startVideo()                                  # Start video-function
 
 #NAVIGATE THE ARENA
 drone.showVideo()
-# thread.start()
+thread.start()
 
 drone.takeoff()
 time.sleep(2)
@@ -46,7 +46,7 @@ time.sleep(2)
 #THE DRONE GET A DECENT ALTITUDE TO DETECT THE MARKER
 NDC = drone.NavDataCount
 alti = 0.0
-target = 1600
+target = 2500
 while alti < target:
 	while drone.NavDataCount == NDC:   time.sleep(0.001)
 	NDC = drone.NavDataCount

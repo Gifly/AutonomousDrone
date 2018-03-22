@@ -1,4 +1,6 @@
+import time
 import sys
+import cv2
 sys.path.insert(0,"../")
 
 import threading
@@ -12,7 +14,11 @@ class keyThread(threading.Thread):
 	def run(self):
 		while(not self.exit):
 			if self.drone.getKey(): self.exit = True
+			time.sleep(0.1)
+
 		print "landing"
 		self.drone.land()
 		print "disconecting"
+		cv2.destroyAllWindows()
 		self.drone.shutdown()
+		self.terminate()
