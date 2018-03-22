@@ -58,6 +58,7 @@ def main():
     drone.hover()
     time.sleep(5)
 
+    #THIS PART GOES to the right until nothing is in front
     distance = tof.get_distance()
     while distance<2500 and distance !=0:
         distance = tof.get_distance()
@@ -72,7 +73,7 @@ def main():
     time.sleep(0.3)
     print "Stopped"
     '''
-    #THIS PART GOES to the right until nothing is in front 
+     
 
     NDC = drone.NavDataCount
     alti = 0.0

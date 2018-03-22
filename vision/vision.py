@@ -16,8 +16,10 @@ def setRange():
 	i=0
 	for line in file:
 		if(i<3):
+			print line
 			lowVal.append(int(line))
 		elif(i<6):
+			print line
 			uppVal.append(int(line))
 		elif(i<9):
 			lowValInd.append(int(line))

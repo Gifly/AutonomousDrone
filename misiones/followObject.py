@@ -38,8 +38,8 @@ drone.startVideo()
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:	time.sleep(0.0001)	# Wait until it is done (after resync is done)
 drone.startVideo()
-PIDx = PIDrone.DronePID(0.050, 0.02, 0)
-PIDy = PIDrone.DronePID(0.061, 0.02, 0)
+PIDx = PIDrone.DronePID(0.050, 0.01, 0)
+PIDy = PIDrone.DronePID(0.061, 0.01, 0)
 print "Initial configuration complete"
 print 'BATTERY: ',drone.getBattery()[0]
 
@@ -77,16 +77,20 @@ while k != 27:
 			SpeedZ=0.0
 			cv2.putText(frame,"Muy cerca",(100,100),font,2,(255,255,255),1)
 			if(SpeedX>0.05):
-				SpeedX=0.04
+				SpeedX=0.035
 			elif(SpeedX<-0.05):
-				SpeedX=-0.04
+				SpeedX=-0.035
 			if(SpeedY>0.05):
-				SpeedY=0.04
+				SpeedY=0.035
 			elif(SpeedY<-0.05):
-				SpeedY=-0.04
+				SpeedY=-0.035
+		
+		elif(area>2500000):
+			cv2.putText(frame,"Demasiado cerca",(100,100),font,2,(255,255,255),1)
+			drone.stop()
 		else:
 			#It is big enough
-			SpeedZ=0.046
+			SpeedZ=0.026
 			
 			cv2.putText(frame,"Acercandome",(100,100),font,2,(255,255,255),1)
 
