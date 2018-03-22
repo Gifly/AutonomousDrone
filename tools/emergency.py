@@ -1,5 +1,6 @@
 import time
 import sys
+import cv2
 sys.path.insert(0,"../")
 
 import threading
@@ -18,5 +19,6 @@ class keyThread(threading.Thread):
 		print "landing"
 		self.drone.land()
 		print "disconecting"
+		cv2.destroyAllWindows()
 		self.drone.shutdown()
 		self.terminate()

@@ -74,7 +74,7 @@ def main():
             NDC = drone.NavDataCount
             alti = drone.NavData["altitude"][3]
             print "Altitude FORWARD: " + str(alti)
-            drone.move(0.0,0.07,0.0,0.0)
+            drone.move(0.025,0.07,0.0,0.0)
         print "back"
         drone.moveBackward(0.1)
         time.sleep(0.5)

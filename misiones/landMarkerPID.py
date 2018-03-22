@@ -46,8 +46,10 @@ time.sleep(2)
 
 #THE DRONE GET A DECENT ALTITUDE TO DETECT THE MARKER
 NDC = drone.NavDataCount
+cenX = 320
+cenY = 180
 alti = 0.0
-target = 3100
+target = 2900
 while alti < target:
 	while drone.NavDataCount == NDC:   time.sleep(0.001)
 	NDC = drone.NavDataCount
@@ -74,7 +76,7 @@ for i in range(0,6):
 		if (i % 2) == 0:
 			drone.move(-0.07,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		else:
-			drone.move(0.1,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
+			drone.move(0.08,0.025,0.0,0.0) #RIGTH, FORWARD, UP, TURN RIGHT
 		img = getFrameGround()
 		cv2.imshow("ground",img)
 		x,y,area = vision.getBase(img)
@@ -91,6 +93,15 @@ for i in range(0,6):
 
 drone.hover()
 time.sleep(2)
+xl,yl,areal = vision.getBase(img)
+if exit and xl < 0 and yl < 0:
+	if x < cenX:
+		drone.moveLeft(0.1)
+		time.sleep(0.5)
+	else:
+		drone.moveRight(0.1)
+		time.sleep(0.5)
+
 
 #INITIALIZE PID HERE
 print "Inicializo el PID"
@@ -100,8 +111,7 @@ SpeedX = 0.0
 SpeedY = 0.0
 
 #THIS PART OF THE CODE ALLIGNS TO THE MARKER ONCE FOUND
-cenX = 320
-cenY = 180
+
 tolerance = 100
 xL=0.0
 yL=0.0
