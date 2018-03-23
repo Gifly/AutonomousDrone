@@ -3,7 +3,7 @@ import cv2
 sys.path.insert(0,"../")
 import api.ps_drone as ps_drone
 from vision import vision
-#from tools import emergency
+from tools import emergency
 import time
 Debug = True
 drone = ps_drone.Drone()  # Start using drone
@@ -45,14 +45,14 @@ def alinearVen(Direccion, frame, drone):
 
 def main():
 
-    #thread = emergency.keyThread(drone)
+    thread = emergency.keyThread(drone)
     print "Booting up the drone"
     drone.startup()
     drone.reset()
     drone.trim()                                     
     drone.getSelfRotation(5) 
     time.sleep(0.5)
-    #thread.start()
+    thread.start()
 
     #Drone's camera initial configuration
     print "Booting up the camera"
