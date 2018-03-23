@@ -1,5 +1,5 @@
 import time
-import cv2 
+import cv2
 import numpy as np
 import math
 import os
@@ -8,7 +8,7 @@ uppVal=[]
 lowValInd=[]
 uppValInd=[]
 cascade = cv2.CascadeClassifier('../vision/cascades/LANDING2.xml')
-debug = False
+debug = True
 
 def setRange():
 	cwd = os.getcwd()
@@ -27,8 +27,6 @@ def setRange():
 		i+=1
 	file.close()
 def getCenter(frame):
-	
-	
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
 	lower = np.array(lowVal)
@@ -42,7 +40,7 @@ def getCenter(frame):
 	M = cv2.moments(mask)
 	area = M['m00']
 	x=-1
-	y=-1 
+	y=-1
 	if(area >100000):
 		x = int(M['m10'] / M['m00'])
 		y = int(M['m01'] / M['m00'])
@@ -52,10 +50,10 @@ def getCenter(frame):
 	print x, y, area
 	return x, y,area
 
-def getIndicators(frame):  
-	
+def getIndicators(frame):
+
 	Puntos =[]
-	
+
 	kernel = np.ones((5,5),np.uint8)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	lowerInd = np.array ([lowValInd[0],lowValInd[1],lowValInd[2]])
@@ -69,7 +67,7 @@ def getIndicators(frame):
 		for i in range (0,2):
 			if(isCircle(contours[i])):
 				Puntos.append(contours[i])
-    
+
 	distance = -1
 	#Gets X and Y axis of both points
 	if(Puntos):
@@ -87,7 +85,7 @@ def getIndicators(frame):
 	#cv2.imshow('Indicators',frame)
 	return distance, len(Puntos), frame
 
-		
+
 
     #Encontrar los centros or wtvr
 
@@ -203,7 +201,7 @@ def validateBase2(frame):
 			if thresh[y0][x0] == 255 and thresh[y1][x1] == 255:
 				return True
 
-	return False 
+	return False
 
 
 def getBase(frame):
@@ -237,9 +235,37 @@ def getBase(frame):
 		if debug:
 			cv2.imshow("Cam", frame)
 		# return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
-		
+
 		if validateBase2(onlyBase):
 			return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
 		return -1,-1,0
-		
+
+def seeYellow(frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    lower = np.array(lowVal)
+    upper = np.array(uppVal)
+    mask = cv2.inRange(hsv, lower, upper)
+    #frame = cv2.bilateralFilter(frame, 9, 75, 75)
+    kernel = np.ones((5, 5), np.uint8)
+    mask = cv2.erode(mask, kernel, iterations=3)    #CHECAR
+    mask = cv2.dilate(mask, kernel, iterations=3)   #CHECAR
+    res = cv2.bitwise_and(frame, frame, mask=mask)
+
+    # res = cv2.medianBlur(res, 5)
+
+    
+    
+    #cv2.imshow('Original image', frame)
+
+    M = cv2.moments(mask)
+    area = M['m00']
+    if(debug):
+		print area
+		cv2.imshow('Final mask',res)
+		cv2.waitKey(5)
+    if (area > 2000000): #CHECAR LIMITE DE AREA
+    	print "true"
+      	return True
+    return False
 
