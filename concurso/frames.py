@@ -18,7 +18,7 @@ def getImage():
 def alinearVen(Direccion, frame, drone):
     Found = False
     timeIni = time.time()
-    cantTime = 3.3
+    cantTime = 4.5
     timeOut = False
     while(not(Found) and not(timeOut)):
         frame =  getImage()
@@ -85,9 +85,6 @@ def main():
         alti = drone.NavData["altitude"][3]
         print "Altitude: " + str(alti)
         drone.moveUp(0.99)
-        if(alti>1101):
-            drone.moveDown(0.3)
-            time.sleep(0.2)
     drone.hover()
     time.sleep(2)
     if(Debug):
@@ -96,9 +93,9 @@ def main():
     for i in range (0,4):
 
         drone.moveForward(0.1)
-        time.sleep(2.7)
+        time.sleep(2.9)
         drone.stop()
-        time.sleep(1)
+        time.sleep(2)
         frame = getImage()
         Direccion = (i % 2 ==0)
         if(Debug):
