@@ -36,9 +36,9 @@ def main():
     for i in range(0,2):
         distance = tof.get_distance()
         if i == 0:
-		target = 1000
+		target = 1100
 	else:
-		target = 600        
+		target = 700        
         while distance > target:
             print "Distance: "
             distance = tof.get_distance()
@@ -46,7 +46,7 @@ def main():
             if distance <= target:
                 drone.moveBackward(0.5)
             else:
-                drone.move(0.02,0.1,0.0,0.0)
+                drone.move(0.05,0.09,0.0,0.0)
             print "next"
         #time.sleep(3)
         print "back"
