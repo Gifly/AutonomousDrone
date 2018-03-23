@@ -58,10 +58,10 @@ def main():
     drone.hover()
     time.sleep(1)
     for i in range(0,2):
-        #THIS PART GOES UP 1600 mm
+        #THIS PART GOES UP 
         NDC = drone.NavDataCount
         alti = 0.0
-        while alti < 1100:
+        while alti < 1000:
             while drone.NavDataCount == NDC:   time.sleep(0.001)
             NDC = drone.NavDataCount
             alti = drone.NavData["altitude"][3]
