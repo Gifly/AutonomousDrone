@@ -7,9 +7,8 @@ lowVal=[]
 uppVal=[]
 lowValInd=[]
 uppValInd=[]
-lowValVen=[]
-uppValVen=[]
 cascade = cv2.CascadeClassifier('../vision/cascades/LANDING2.xml')
+debug = False
 
 def setRange():
 	cwd = os.getcwd()
@@ -23,15 +22,12 @@ def setRange():
 			uppVal.append(int(line))
 		elif(i<9):
 			lowValInd.append(int(line))
-		elif(i<12):
+		else:
 			uppValInd.append(int(line))
-		elif(i<15):
-			lowValVen.append(int(line))
-		elif(i<18):
-			uppValVen.append(int(line))
 		i+=1
 	file.close()
 def getCenter(frame):
+	
 	
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
@@ -41,7 +37,8 @@ def getCenter(frame):
 	#cv2.imshow('mask',mask)
 	res = cv2.bitwise_and(frame, frame, mask=mask)
 	res = cv2.medianBlur(res, 5)
-	cv2.imshow('Original image', frame)
+	if debug:
+		cv2.imshow('Original image', frame)
 	M = cv2.moments(mask)
 	area = M['m00']
 	x=-1
@@ -50,7 +47,8 @@ def getCenter(frame):
 		x = int(M['m10'] / M['m00'])
 		y = int(M['m01'] / M['m00'])
 		cv2.circle(res, (x,y),5,(66,244,66),-1)
-	cv2.imshow('Color Detector', res)
+	if debug:
+		cv2.imshow('Color Detector', res)
 	print x, y, area
 	return x, y,area
 
@@ -64,7 +62,7 @@ def getIndicators(frame):
 	upperInd = np.array([uppValInd[0],uppValInd[1],uppValInd[2]])
 	maskInd = cv2.inRange(hsv,lowerInd,upperInd)
 	maskInd = cv2.morphologyEx(maskInd,cv2.MORPH_OPEN,kernel)
-	contours, _ = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours , hierarchy = cv2.findContours(maskInd, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
 	if(len(contours)>=2):
@@ -97,7 +95,6 @@ def isCircle(cnt):
 	template = cv2.imread('../vision/images/circle.jpg',0)
 	ret, thresh = cv2.threshold(template, 127, 255, 0)
 
-
 	contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
@@ -106,61 +103,40 @@ def isCircle(cnt):
 		return True
 	return False
 
-def getVentana(frame):
+def getPared(frame,lowT):
 	Rectan=[]
 	area=0
-	x= 0
-	y = 0
 	kernel = np.ones((5,5),np.uint8)
-	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	frameCl = cv2.morphologyEx(hsv,cv2.MORPH_OPEN,kernel)
-	frameCl = cv2.dilate(frameCl,kernel,iterations=1)
-	kanye = cv2.bilateralFilter(frameCl,9,75,75)
-	lowerInd = np.array ([lowValVen[0],lowValVen[1],lowValVen[2]])
-	upperInd = np.array([uppValVen[0],uppValVen[1],uppValVen[2]])
-	maskInd = cv2.inRange(kanye,lowerInd,upperInd)
-	maskInver = cv2.bitwise_not(maskInd)
-	cv2.imshow("La Mascara 2", maskInver)
-	contours, _ = cv2.findContours(maskInver, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
+	frameCl = cv2.morphologyEx(frame,cv2.MORPH_OPEN,kernel)
+	frameCl = cv2.bilateralFilter(frameCl,9,75,75)
+	kanye = cv2.Canny(frameCl,lowT, 3*lowT)
+	if debug:
+		cv2.imshow("Canny",kanye)
+	contours , hierarchy = cv2.findContours(kanye, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	#print n
 	contours = sorted(contours,key=cv2.contourArea, reverse=True)[:n]
-	tamContours = len(contours)
-	if(tamContours>=1):
-		M = cv2.moments(contours[0])
-		area = M['m00']
-		if(tamContours>=2):
-			if(area<200000):
-				biggestC = contours[0]	
-			else:
-				biggestC = contours[1]
-		else:
-			biggestC =contours[0]
-		accuracy = 0.02 * cv2.arcLength(biggestC,True)
-		approx = cv2.approxPolyDP(biggestC,accuracy,True)
-		cv2.drawContours(frame,[approx],-1,(255,0,0),4)
-		if(isRectangle(biggestC)):
-			print "Encontre un rectangulo"
-			cv2.drawContours(frame,biggestC,-1,(0,255,0),4)
-    		M = cv2.moments(biggestC)
+	cv2.drawContours(frame,contours,-1,(0,50,0),1)
+	if(len(contours)>=1):
+		cv2.drawContours(frame,contours[0],-1,(255,0,0),2)
+		if(isRectangle(contours[0])):
+			#print "Encontre un rectangulo"
+			cv2.drawContours(frame,contours[0],-1,(0,0,255),2)
+    		M = cv2.moments(contours[0])
     		area = M['m00']
-    		if(area>5000):
-    			x = int(M['m10'] / M['m00'])
-    			y = int(M['m01'] / M['m00'])
-    			cv2.circle(frame,(x,y),5,(66,244,66), -1)
-	return x, y, area,frame
+	return area,frame
 	#Gets X and Y axis of both points
 
 def isRectangle(cnt):
 	template = cv2.imread('../vision/images/rectangle.png',0)
 	ret, thresh = cv2.threshold(template, 127, 255, 0)
 
-	contours,  hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+	contours, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
 	match = cv2.matchShapes(contours[0], cnt, 1, 0.0)
 
-	if match < 0.45:
+	if match < 0.20:
 		return True
 	return False
 
@@ -172,7 +148,8 @@ def validateBase(frame):
 	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
 	kernel = np.ones((3, 3), np.uint8)
 	thresh = cv2.erode(thresh, kernel, iterations=2)
-	cv2.imshow("thresh", thresh)
+	if debug:
+		cv2.imshow("thresh", thresh)
 	# cv2.waitKey()
 
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -206,7 +183,8 @@ def validateBase2(frame):
 	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
 	kernel = np.ones((3, 3), np.uint8)
 	thresh = cv2.erode(thresh, kernel, iterations=2)
-	cv2.imshow("thresh", thresh)
+	if debug:
+		cv2.imshow("thresh", thresh)
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
@@ -264,3 +242,4 @@ def getBase(frame):
 			return (xr + (wr/2)), (yr + (yr/2)),(wr * hr)
 		return -1,-1,0
 		
+
