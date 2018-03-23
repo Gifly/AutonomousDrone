@@ -59,7 +59,7 @@ def main():
     vision.setRange()
     frame = getImage()
     coordX, coordY, area = vision.getCenter(frame)
-    while coordY > -1 and coordY < 300 and area < 700000:
+    while coordY > -1 and coordY < 300 and area < 1000000:
         drone.moveForward(0.15)
         frame = getImage()
         coordX, coordY, area = vision.getCenter(frame)
@@ -70,21 +70,21 @@ def main():
     #ALINENANDOSE CON EL OBJETO
     drone.hover()
     time.sleep(1)
-    print "Alinenandose"
-    initTime = time.time()
-    while(time.time()< initTime + 2):
-        frame = getImage()
-        coordX, coordY, area = vision.getCenter(frame)
-        if coordX != -1 and coordY !=-1:
-            SpeedX = -1.0*PIDx.getVelocity(0.005,320,coordX)
-            drone.move(SpeedX, 0.0, 0.0, 0.0)
-            print SpeedX
-        else:
-            drone.hover()
-            print "Not found again"
+    # print "Alinenandose"
+    # initTime = time.time()
+    # while(time.time()< initTime + 2):
+    #     frame = getImage()
+    #     coordX, coordY, area = vision.getCenter(frame)
+    #     if coordX != -1 and coordY !=-1:
+    #         SpeedX = -1.0*PIDx.getVelocity(0.005,320,coordX)
+    #         drone.move(SpeedX, 0.0, 0.0, 0.0)
+    #         print SpeedX
+    #     else:
+    #         drone.hover()
+    #         print "Not found again"
         
-    drone.stop()
-    time.sleep(1)
+    # drone.stop()
+    # time.sleep(1)
 
     drone.hover()
     time.sleep(2)

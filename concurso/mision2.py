@@ -60,7 +60,7 @@ def main():
     vision.setRange()
     frame = getImage()
     coordX, coordY, area = vision.getCenter(frame)
-    while coordY > -1 and coordY < 300 and area < 700000:
+    while coordY > -1 and coordY < 300 and area < 1001000:
         drone.moveForward(0.15)
         frame = getImage()
         coordX, coordY, area = vision.getCenter(frame)
@@ -109,7 +109,7 @@ def main():
     time.sleep(2)	
 
     drone.moveForward(0.15)
-    time.sleep(2)
+    time.sleep(4.5)
 
     drone.hover()
     time.sleep(2)

@@ -60,7 +60,7 @@ def main():
     vision.setRange()
     frame = getImage()
     coordX, coordY, area = vision.getCenter(frame)
-    while coordY > -1 and coordY < 300 and area < 700000:
+    while coordY > -1 and coordY < 300 and area < 2000000:
         drone.moveForward(0.15)
         frame = getImage()
         coordX, coordY, area = vision.getCenter(frame)
@@ -103,6 +103,7 @@ def main():
             alti = drone.NavData["altitude"][3]
             print "Altitude FORWARD: " + str(alti)
             drone.move(0.0,0.07,0.0,0.0)
+        time.sleep(0.2)
         print "back"
         drone.moveBackward(0.1)
         time.sleep(0.5)
