@@ -24,8 +24,8 @@ class DronePID(PID.PID):
 			self.velocity = 0.063
 		elif(self.velocity < -0.063):
 			self.velocity = -0.063
-		elif(self.velocity<0.025 and self.velocity >=0):
+		elif(self.velocity<0.023 and self.velocity >=0):
 			self.velocity=0.0
-		elif(self.velocity>-0.025 and self.velocity <=0):
+		elif(self.velocity>-0.023 and self.velocity <=0):
 			self.velocity=0.0
 		return self.velocity

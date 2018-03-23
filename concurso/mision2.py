@@ -89,18 +89,20 @@ def main():
     time.sleep(1)
 
 
+    print "Going up"
 
     #THIS PART GOES UP 1600 mm
     NDC = drone.NavDataCount
     alti = 0.0
-    while alti < 1500:
+    while alti < 1700:
         while drone.NavDataCount == NDC:   time.sleep(0.001)
         NDC = drone.NavDataCount
         alti = drone.NavData["altitude"][3]
         print "Altitude: " + str(alti)
         drone.move(0,-0.05,0.99,0.0)
 
-
+    print "Done"
+    drone.stopVideo()
 
 
     drone.moveDown(0.2)
@@ -108,8 +110,9 @@ def main():
     drone.hover()
     time.sleep(2)	
 
-    drone.moveForward(0.15)
-    time.sleep(4.5)
+    print "FORWARD"
+    drone.moveForward(0.2)
+    time.sleep(2.5)
 
     drone.hover()
     time.sleep(2)
