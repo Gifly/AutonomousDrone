@@ -52,6 +52,11 @@ def main():
     drone.hover()
     time.sleep(3)
     '''
+
+    drone.moveForward(0.1)
+    time.sleep(2)
+    drone.hover()
+    time.sleep(1)
     for i in range(0,2):
         #THIS PART GOES UP 1600 mm
         NDC = drone.NavDataCount
@@ -74,7 +79,7 @@ def main():
             NDC = drone.NavDataCount
             alti = drone.NavData["altitude"][3]
             print "Altitude FORWARD: " + str(alti)
-            drone.move(0.025,0.07,0.0,0.0)
+            drone.move(0.0,0.07,0.0,0.0)
         print "back"
         drone.moveBackward(0.1)
         time.sleep(0.5)
@@ -85,7 +90,8 @@ def main():
     drone.hover()
     time.sleep(2)
     print "left"
-    drone.moveLeft(0.2)
+    drone.moveForward(0.2)
+    # drone.moveLeft(0.2)
     time.sleep(1)
     drone.hover()
     time.sleep(2)
