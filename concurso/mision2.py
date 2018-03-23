@@ -111,8 +111,8 @@ def main():
     time.sleep(2)	
 
     print "FORWARD"
-    drone.moveForward(0.2)
-    time.sleep(2.5)
+    drone.moveForward(0.4)
+    time.sleep(5)
 
     drone.hover()
     time.sleep(2)
