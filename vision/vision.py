@@ -8,7 +8,7 @@ uppVal=[]
 lowValInd=[]
 uppValInd=[]
 cascade = cv2.CascadeClassifier('../vision/cascades/LANDING2.xml')
-debug = False
+debug = True
 
 def setRange():
 	cwd = os.getcwd()
@@ -246,19 +246,26 @@ def seeYellow(frame):
     lower = np.array(lowVal)
     upper = np.array(uppVal)
     mask = cv2.inRange(hsv, lower, upper)
-    frame = cv2.bilateralFilter(frame, 9, 75, 75)
+    #frame = cv2.bilateralFilter(frame, 9, 75, 75)
     kernel = np.ones((5, 5), np.uint8)
     mask = cv2.erode(mask, kernel, iterations=3)    #CHECAR
     mask = cv2.dilate(mask, kernel, iterations=3)   #CHECAR
     res = cv2.bitwise_and(frame, frame, mask=mask)
 
     # res = cv2.medianBlur(res, 5)
-    # cv2.imshow('Final mask',res)
+
+    
+    
     #cv2.imshow('Original image', frame)
 
     M = cv2.moments(mask)
     area = M['m00']
-    if (area > 100000): #CHECAR LIMITE DE AREA
-        return True
+    if(debug):
+		print area
+		cv2.imshow('Final mask',res)
+		cv2.waitKey(5)
+    if (area > 2000000): #CHECAR LIMITE DE AREA
+    	print "true"
+      	return True
     return False
 
