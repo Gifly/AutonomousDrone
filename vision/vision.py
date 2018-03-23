@@ -8,6 +8,7 @@ uppVal=[]
 lowValInd=[]
 uppValInd=[]
 cascade = cv2.CascadeClassifier('../vision/cascades/LANDING2.xml')
+debug = False
 
 def setRange():
 	cwd = os.getcwd()
@@ -27,6 +28,7 @@ def setRange():
 	file.close()
 def getCenter(frame):
 	
+	
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# Define COLORROSAQLERO range (CHECKKKKKKKKKKKKKKKKKKK)
 	lower = np.array(lowVal)
@@ -35,7 +37,8 @@ def getCenter(frame):
 	#cv2.imshow('mask',mask)
 	res = cv2.bitwise_and(frame, frame, mask=mask)
 	res = cv2.medianBlur(res, 5)
-	cv2.imshow('Original image', frame)
+	if debug:
+		cv2.imshow('Original image', frame)
 	M = cv2.moments(mask)
 	area = M['m00']
 	x=-1
@@ -44,7 +47,8 @@ def getCenter(frame):
 		x = int(M['m10'] / M['m00'])
 		y = int(M['m01'] / M['m00'])
 		cv2.circle(res, (x,y),5,(66,244,66),-1)
-	cv2.imshow('Color Detector', res)
+	if debug:
+		cv2.imshow('Color Detector', res)
 	print x, y, area
 	return x, y,area
 
@@ -107,7 +111,8 @@ def getPared(frame,lowT):
 	frameCl = cv2.morphologyEx(frame,cv2.MORPH_OPEN,kernel)
 	frameCl = cv2.bilateralFilter(frameCl,9,75,75)
 	kanye = cv2.Canny(frameCl,lowT, 3*lowT)
-	cv2.imshow("Canny",kanye)
+	if debug:
+		cv2.imshow("Canny",kanye)
 	contours , hierarchy = cv2.findContours(kanye, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	n = len(contours)
 	#print n
@@ -143,7 +148,8 @@ def validateBase(frame):
 	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
 	kernel = np.ones((3, 3), np.uint8)
 	thresh = cv2.erode(thresh, kernel, iterations=2)
-	cv2.imshow("thresh", thresh)
+	if debug:
+		cv2.imshow("thresh", thresh)
 	# cv2.waitKey()
 
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -177,7 +183,8 @@ def validateBase2(frame):
 	ret, thresh = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
 	kernel = np.ones((3, 3), np.uint8)
 	thresh = cv2.erode(thresh, kernel, iterations=2)
-	cv2.imshow("thresh", thresh)
+	if debug:
+		cv2.imshow("thresh", thresh)
 	contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
