@@ -79,7 +79,7 @@ def main():
     #THIS PART GOES UP 1600 mm
     NDC = drone.NavDataCount
     alti = 0.0
-    while alti < 800:
+    while alti < 700:
         while drone.NavDataCount == NDC:   time.sleep(0.001)
         NDC = drone.NavDataCount
         alti = drone.NavData["altitude"][3]
@@ -110,37 +110,13 @@ def main():
             print
             #break
     print "Ya acabe las ventanas"
+    timeOut = alinearVen(True,frame, drone)
     if(not timeOut):
         drone.moveForward(0.1)
         time.sleep(1)
     drone.stop()
     drone.land()
     cv2.destroyAllWindows()
-
-def maine():
-   
-    #thread = emergency.keyThread(drone)
-    print "Configuracion del drone"
-    drone.startup()  # Connects to drone and starts subprocesses
-    drone.reset()  # Always good, at start
-    drone.trim()                                       # Recalibrate sensors
-    drone.getSelfRotation(5)
-    drone.setConfigAllID()
-    cap = cv2.VideoCapture(0)
-    #Drone's camera initial configuration
-    print "Booting up the camera"
-    drone.frontCam()
-    drone.hdVideo()
-    drone.startVideo()
-    time.sleep(0.5)
-    #thread.start()
-    print "BATERIA ACTUAL: ", drone.getBattery()[0]
-
-    print "Comienzo el programa"
-    vision.setRange()
-    print "Yellow"
-    frame = getImage()
-    alinearVen(True,frame,drone)
 
 if __name__ == "__main__":
     main()
